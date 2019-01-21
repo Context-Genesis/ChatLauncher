@@ -1,11 +1,10 @@
 package com.crearo.launched;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 import com.stfalcon.chatkit.messages.MessageInput;
@@ -15,6 +14,8 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Nullable
+    @SuppressLint(value = "DefaultLocale")
     private String getPackageNameFromName(String msg) {
         String fromClosestPackageName = null;
         String fromClosestName = null;
