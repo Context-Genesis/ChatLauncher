@@ -1,14 +1,14 @@
-package com.contextgenesis.chatlauncher;
+package com.contextgenesis.chatlauncher.models.chat;
 
 import com.stfalcon.chatkit.commons.models.IUser;
 
-public class User implements IUser {
+public class ChatUser implements IUser {
     private final String id;
     private final String name;
     private final String avatar;
     private final boolean online;
 
-    public User(String id, String name, String avatar, boolean online) {
+    public ChatUser(String id, String name, String avatar, boolean online) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;

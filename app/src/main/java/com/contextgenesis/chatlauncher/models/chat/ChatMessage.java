@@ -1,24 +1,24 @@
-package com.contextgenesis.chatlauncher;
+package com.contextgenesis.chatlauncher.models.chat;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
 
 import java.util.Date;
 
-public class Message implements IMessage {
+public class ChatMessage implements IMessage {
 
     private String id;
     private String text;
     private Date createdAt;
-    private User user;
+    private ChatUser chatUser;
 
-    public Message(String id, User user, String text) {
-        this(id, user, text, new Date());
+    public ChatMessage(String id, ChatUser chatUser, String text) {
+        this(id, chatUser, text, new Date());
     }
 
-    public Message(String id, User user, String text, Date createdAt) {
+    public ChatMessage(String id, ChatUser chatUser, String text, Date createdAt) {
         this.id = id;
         this.text = text;
-        this.user = user;
+        this.chatUser = chatUser;
         this.createdAt = new Date(createdAt.getTime());
     }
 
@@ -38,8 +38,8 @@ public class Message implements IMessage {
     }
 
     @Override
-    public User getUser() {
-        return this.user;
+    public ChatUser getUser() {
+        return this.chatUser;
     }
 
 }

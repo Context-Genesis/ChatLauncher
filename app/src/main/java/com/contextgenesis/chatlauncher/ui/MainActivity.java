@@ -7,9 +7,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.contextgenesis.chatlauncher.Message;
+import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
 import com.contextgenesis.chatlauncher.R;
-import com.contextgenesis.chatlauncher.User;
+import com.contextgenesis.chatlauncher.models.chat.ChatUser;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity implements
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
-    private MessagesListAdapter<Message> messagesAdapter;
-    private User user;
-    private User phone;
+    private MessagesListAdapter<ChatMessage> messagesAdapter;
+    private ChatUser chatUser;
+    private ChatUser phone;
     private List<ApplicationInfo> packageList;
 
     @Override
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        messagesAdapter = new MessagesListAdapter<>("user", null);
+        messagesAdapter = new MessagesListAdapter<>("chatUser", null);
         messagesAdapter.setLoadMoreListener(this);
         messagesList.setAdapter(messagesAdapter);
 
@@ -57,20 +57,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onSubmit(CharSequence input) {
-        Message message = new Message(
+        ChatMessage chatMessage = new ChatMessage(
                 String.valueOf(UUID.randomUUID().getLeastSignificantBits()),
-                getUser(),
+                getChatUser(),
                 input.toString());
-        messagesAdapter.addToStart(message, true);
+        messagesAdapter.addToStart(chatMessage, true);
         String packageName = getPackageNameFromName(input.toString());
         if (packageName == null) {
-            messagesAdapter.addToStart(new Message("android", getPhone(), "I kinda dumb bro"), false);
+            messagesAdapter.addToStart(new ChatMessage("android", getPhone(), "I kinda dumb bro"), false);
         } else {
             Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
             if (launchIntent == null) {
-                messagesAdapter.addToStart(new Message("android", getPhone(), "error lol"), false);
+                messagesAdapter.addToStart(new ChatMessage("android", getPhone(), "error lol"), false);
             } else {
-                messagesAdapter.addToStart(new Message("android", getPhone(), "Launching!"), false);
+                messagesAdapter.addToStart(new ChatMessage("android", getPhone(), "Launching!"), false);
                 startActivity(launchIntent);
             }
         }
@@ -106,20 +106,20 @@ public class MainActivity extends AppCompatActivity implements
         return packageList;
     }
 
-    private User getUser() {
-        if (user == null) {
-            user = new User(
-                    "user",
+    private ChatUser getChatUser() {
+        if (chatUser == null) {
+            chatUser = new ChatUser(
+                    "chatUser",
                     "Rish",
                     null,
                     true);
         }
-        return user;
+        return chatUser;
     }
 
-    private User getPhone() {
+    private ChatUser getPhone() {
         if (phone == null) {
-            phone = new User(
+            phone = new ChatUser(
                     "phone",
                     "Android",
                     null,
