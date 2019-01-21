@@ -7,8 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import lombok.Getter;
+
+import static com.contextgenesis.chatlauncher.utils.StringUtils.getNthString;
 
 @Getter
 public class InputMessage {
@@ -34,32 +35,16 @@ public class InputMessage {
         }
     }
 
+    /**
+     * @param input input message
+     * @return arguments; array split by spaces not including the first word
+     */
     private static Object[] getArgs(String input) {
         String[] split = input.split(" ");
         if (split.length == 0) {
             return new Object[0];
         } else {
             return Arrays.copyOfRange(split, 1, split.length);
-        }
-    }
-
-    /**
-     * @param text input text
-     * @param n    index from the input text
-     * @return nth item from the input text split by space
-     */
-    @Nullable
-    private static String getNthString(String text, int n) {
-        if (text == null || n < 0) {
-            return null;
-        }
-        String[] split = text.split(" ");
-        if (split.length == 0) {
-            return text;
-        } else if (n >= split.length) {
-            return null;
-        } else {
-            return split[n];
         }
     }
 }
