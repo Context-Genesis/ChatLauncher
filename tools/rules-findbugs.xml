@@ -2,4 +2,5 @@
     <Match>
         <Class name="~.*\.R\$.*" />
     </Match>
+    <Bug pattern="EI_EXPOSE_REP" />
 </FindBugsFilter>

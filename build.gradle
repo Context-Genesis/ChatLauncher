@@ -27,7 +27,7 @@ task clean(type: Delete) {
 }
 
 task checkCode(type: GradleBuild) {
-    tasks = ['pmd', 'lintDebug', 'findbugs']
+    tasks = ['clean', 'pmd', 'lintDebug', 'findbugs']
 }
 
 task checkTests(type: GradleBuild) {
