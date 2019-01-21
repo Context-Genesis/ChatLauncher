@@ -15,7 +15,7 @@ public class RootApplication extends Application {
         super.onCreate();
 
         setupLogging();
-        RootProviders.init(getApplicationContext());
+        RootProviders.init(this);
     }
 
     private void setupLogging() {

@@ -1,5 +1,6 @@
 package com.contextgenesis.chatlauncher;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
@@ -13,16 +14,16 @@ import com.contextgenesis.chatlauncher.manager.app.AppManager;
 public final class RootProviders {
 
     private static RootProviders rootProviders;
-    private final Context context;
+    private final Application application;
     private AppManager appManager;
 
-    private RootProviders(Context context) {
-        this.context = context;
+    private RootProviders(Application application) {
+        this.application = application;
     }
 
-    public static void init(Context context) {
+    public static void init(Application application) {
         if (rootProviders == null) {
-            rootProviders = new RootProviders(context);
+            rootProviders = new RootProviders(application);
         }
     }
 
@@ -32,13 +33,13 @@ public final class RootProviders {
 
     public AppManager getAppManager() {
         if (appManager == null) {
-            appManager = new AppManager(context.getPackageManager());
+            appManager = new AppManager(application.getApplicationContext().getPackageManager());
         }
         return appManager;
     }
 
     public Context getContext() {
-        return context;
+        return application.getApplicationContext();
     }
 
 }
