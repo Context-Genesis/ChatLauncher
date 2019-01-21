@@ -1,4 +1,4 @@
-package com.crearo.launched;
+package com.contextgenesis.chatlauncher;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
 

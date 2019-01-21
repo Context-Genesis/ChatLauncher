@@ -1,4 +1,4 @@
-package com.crearo.launched;
+package com.contextgenesis.chatlauncher;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

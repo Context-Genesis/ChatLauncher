@@ -1,4 +1,4 @@
-package com.crearo.launched;
+package com.contextgenesis.chatlauncher;
 
 import org.junit.Test;
 

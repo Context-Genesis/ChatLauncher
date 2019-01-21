@@ -34,7 +34,7 @@ def getVersionName = { ->
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.crearo.launched"
+        applicationId "com.contextgenesis.chatlauncher"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode getVersionCode()

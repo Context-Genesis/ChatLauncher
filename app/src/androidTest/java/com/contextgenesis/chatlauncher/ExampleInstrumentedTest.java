@@ -1,4 +1,4 @@
-package com.crearo.launched;
+package com.contextgenesis.chatlauncher;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.crearo.launched", appContext.getPackageName());
+        assertEquals("com.contextgenesis.chatlauncher", appContext.getPackageName());
     }
 }
