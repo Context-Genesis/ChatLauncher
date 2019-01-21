@@ -17,16 +17,16 @@ public class AppManager {
         this.packageManager = packageManager;
     }
 
-    private List<AppInfo> getAppList(PackageManager manager) {
+    public List<AppInfo> getAppList() {
         List<AppInfo> appList = new ArrayList<>();
 
         Intent i = new Intent(Intent.ACTION_MAIN);
         i.addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> resolveInfoList = manager.queryIntentActivities(i, 0);
+        List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(i, 0);
         for (ResolveInfo resolveInfo : resolveInfoList) {
             appList.add(new AppInfo(resolveInfo.activityInfo.packageName,
                     resolveInfo.activityInfo.name,
-                    resolveInfo.loadLabel(manager).toString()));
+                    resolveInfo.loadLabel(packageManager).toString()));
         }
 
         return appList;

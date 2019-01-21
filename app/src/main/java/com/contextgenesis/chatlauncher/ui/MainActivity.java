@@ -7,8 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
 import com.contextgenesis.chatlauncher.R;
+import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
 import com.contextgenesis.chatlauncher.models.chat.ChatUser;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
