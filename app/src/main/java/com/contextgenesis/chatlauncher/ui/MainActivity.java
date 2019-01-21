@@ -1,4 +1,4 @@
-package com.contextgenesis.chatlauncher;
+package com.contextgenesis.chatlauncher.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -7,6 +7,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.contextgenesis.chatlauncher.Message;
+import com.contextgenesis.chatlauncher.R;
+import com.contextgenesis.chatlauncher.User;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
