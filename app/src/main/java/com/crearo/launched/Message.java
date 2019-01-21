@@ -19,7 +19,7 @@ public class Message implements IMessage {
         this.id = id;
         this.text = text;
         this.user = user;
-        this.createdAt = createdAt;
+        this.createdAt = new Date(createdAt.getTime());
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Message implements IMessage {
 
     @Override
     public Date getCreatedAt() {
-        return createdAt;
+        return new Date(createdAt.getTime());
     }
 
     @Override
