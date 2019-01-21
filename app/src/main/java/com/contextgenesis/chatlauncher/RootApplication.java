@@ -15,6 +15,7 @@ public class RootApplication extends Application {
         super.onCreate();
 
         setupLogging();
+        RootProviders.init(getApplicationContext());
     }
 
     private void setupLogging() {
@@ -32,8 +33,10 @@ public class RootApplication extends Application {
         @Override
         protected void log(int priority, @Nullable String tag, @NotNull String message, @Nullable Throwable t) {
             if (priority == Log.ERROR) {
-                t.printStackTrace();
-                Log.e(tag, message + " " + t.getMessage());
+                if (t != null) {
+                    t.printStackTrace();
+                }
+                Log.e(tag, message);
             }
         }
     }

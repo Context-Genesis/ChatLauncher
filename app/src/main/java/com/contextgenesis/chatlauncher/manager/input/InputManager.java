@@ -28,7 +28,7 @@ public class InputManager {
         input = StringUtils.trim(input);
         switch (getNthString(input, 0)) {
             case "open":
-                return new AppLaunchCommand();
+                return new AppLaunchCommand(getNthString(input, 1));
         }
         return null;
     }
