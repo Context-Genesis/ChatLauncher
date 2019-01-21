@@ -74,9 +74,16 @@ dependencies {
     // chatkit
     implementation 'com.github.stfalcon:chatkit:0.3.3'
 
-    // butterknife
+    // butterknife for view binding
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+
+    // timber for logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // lombok for autogen getter/setters
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
 
     // tests
     testImplementation 'junit:junit:4.12'
