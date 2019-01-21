@@ -3,10 +3,10 @@ package com.crearo.launched;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 public class User implements IUser {
-    private String id;
-    private String name;
-    private String avatar;
-    private boolean online;
+    private final String id;
+    private final String name;
+    private final String avatar;
+    private final boolean online;
 
     public User(String id, String name, String avatar, boolean online) {
         this.id = id;

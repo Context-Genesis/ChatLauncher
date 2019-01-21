@@ -20,7 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements
-        MessagesListAdapter.SelectionListener,
         MessagesListAdapter.OnLoadMoreListener,
         MessageInput.InputListener {
 
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         messagesAdapter = new MessagesListAdapter<>("user", null);
-        messagesAdapter.enableSelectionMode(this);
         messagesAdapter.setLoadMoreListener(this);
         messagesList.setAdapter(messagesAdapter);
 
@@ -55,11 +53,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSelectionChanged(int count) {
-
-    }
-
-    @Override
     public boolean onSubmit(CharSequence input) {
         Message message = new Message(
                 String.valueOf(UUID.randomUUID().getLeastSignificantBits()),
@@ -67,37 +60,40 @@ public class MainActivity extends AppCompatActivity implements
                 input.toString());
         messagesAdapter.addToStart(message, true);
         String packageName = getPackageNameFromName(input.toString());
-        if (packageName != null) {
+        if (packageName == null) {
+            messagesAdapter.addToStart(new Message("android", getPhone(), "I kinda dumb bro"), false);
+        } else {
             Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
-            if (launchIntent != null) {
+            if (launchIntent == null) {
+                messagesAdapter.addToStart(new Message("android", getPhone(), "error lol"), false);
+            } else {
                 messagesAdapter.addToStart(new Message("android", getPhone(), "Launching!"), false);
                 startActivity(launchIntent);
-            } else {
-                messagesAdapter.addToStart(new Message("android", getPhone(), "error lol"), false);
             }
-        } else {
-            messagesAdapter.addToStart(new Message("android", getPhone(), "I kinda dumb bro"), false);
         }
         return true;
     }
 
     @Nullable
     @SuppressLint(value = "DefaultLocale")
+    @SuppressWarnings("PMD.UseLocaleWithCaseConversions")
     private String getPackageNameFromName(String msg) {
         String fromClosestPackageName = null;
         String fromClosestName = null;
         for (ApplicationInfo pkg : getAppsList()) {
-            if (pkg.name != null && pkg.name.toLowerCase().equals(msg.toLowerCase())) {
-                return pkg.name;
-            }
-            if (pkg.name != null && pkg.name.toLowerCase().contains(msg.toLowerCase())) {
-                fromClosestName = pkg.packageName;
+            if (pkg.name != null) {
+                if (pkg.name.equalsIgnoreCase(msg)) {
+                    return pkg.name;
+                }
+                if (pkg.name.toLowerCase().contains(msg.toLowerCase())) {
+                    fromClosestName = pkg.packageName;
+                }
             }
             if (pkg.packageName != null && pkg.packageName.toLowerCase().contains(msg.toLowerCase())) {
                 fromClosestPackageName = pkg.packageName;
             }
         }
-        return fromClosestName != null ? fromClosestName : fromClosestPackageName;
+        return fromClosestName == null ? fromClosestPackageName : fromClosestName;
     }
 
     public List<ApplicationInfo> getAppsList() {
@@ -106,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         return packageList;
     }
-
 
     private User getUser() {
         if (user == null) {
