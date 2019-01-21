@@ -25,12 +25,13 @@ public class InputManager {
     }
 
     private Command parseInput(String input) {
-        input = StringUtils.trim(input);
-        switch (getNthString(input, 0)) {
+        String trimmedInput = StringUtils.trim(input);
+        switch (getNthString(trimmedInput, 0)) {
             case "open":
-                return new AppLaunchCommand(getNthString(input, 1));
+                return new AppLaunchCommand(getNthString(trimmedInput, 1));
+            default:
+                return null;
         }
-        return null;
     }
 
     /**

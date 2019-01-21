@@ -7,9 +7,9 @@ import com.contextgenesis.chatlauncher.manager.app.AppManager;
 
 public class AppLaunchCommand implements Command {
 
-    private AppManager appManager;
-    private Context context;
-    private String arg;
+    private final String arg;
+    private final AppManager appManager;
+    private final Context context;
 
     public AppLaunchCommand(String arg) {
         this.arg = arg;

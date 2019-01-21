@@ -10,12 +10,11 @@ import com.contextgenesis.chatlauncher.manager.app.AppManager;
  * <p>
  * todo: make this Lifecycle aware
  */
-public class RootProviders {
+public final class RootProviders {
 
     private static RootProviders rootProviders;
-
+    private final Context context;
     private AppManager appManager;
-    private Context context;
 
     private RootProviders(Context context) {
         this.context = context;
