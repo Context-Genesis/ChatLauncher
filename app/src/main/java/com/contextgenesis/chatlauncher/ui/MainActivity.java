@@ -1,7 +1,6 @@
 package com.contextgenesis.chatlauncher.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.manager.input.InputManager;
@@ -11,21 +10,24 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements
         MessagesListAdapter.OnLoadMoreListener,
         MessageInput.InputListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.input)
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
+
     private MessagesListAdapter<ChatMessage> messagesAdapter;
     private ChatUser chatUser;
     private ChatUser phone;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadMore(int page, int totalItemsCount) {
-        Log.d(TAG, "onLoadMore() called with: page = [" + page + "], totalItemsCount = [" + totalItemsCount + "]");
+        Timber.d("onLoadMore() called with: page = [" + page + "], totalItemsCount = [" + totalItemsCount + "]");
     }
 
     @Override
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         ChatMessage userInputMessage = new ChatMessage(
                 String.valueOf(UUID.randomUUID().getLeastSignificantBits()),
                 getChatUser(),
-                input.toString());
+                StringUtils.trim(input.toString()));
         messagesAdapter.addToStart(userInputMessage, true);
 
         String response = inputManager.executeInput(userInputMessage.getText());
