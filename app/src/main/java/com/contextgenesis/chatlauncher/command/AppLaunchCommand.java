@@ -4,15 +4,16 @@ import android.content.Context;
 
 import com.contextgenesis.chatlauncher.RootProviders;
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
+import com.contextgenesis.chatlauncher.manager.input.InputMessage;
 
 public class AppLaunchCommand implements Command {
 
-    private final String arg;
     private final AppManager appManager;
     private final Context context;
+    private final InputMessage inputMessage;
 
-    public AppLaunchCommand(String arg) {
-        this.arg = arg;
+    public AppLaunchCommand(InputMessage inputMessage) {
+        this.inputMessage = inputMessage;
         context = RootProviders.get().getContext();
         appManager = RootProviders.get().getAppManager();
     }
@@ -24,7 +25,7 @@ public class AppLaunchCommand implements Command {
 
     @Override
     public String getName() {
-        return "open";
+        return "launch";
     }
 
     @Override
@@ -34,10 +35,15 @@ public class AppLaunchCommand implements Command {
 
     @Override
     public String execute() {
-        if (appManager.launchApp(context, appManager.getAppInfoFromName(arg))) {
-            return "Hooray the app launch command has executed";
+        if (inputMessage.getArgs().length <= 0) {
+            return "Tell me what you want to launch!";
+        }
+
+        String appName = (String) inputMessage.getArgs()[0];
+        if (appManager.launchApp(context, appManager.getAppInfoFromName(appName))) {
+            return String.format("Launching %s", appName);
         } else {
-            return "Unable to execute the command";
+            return String.format("Unable to open %s. Who knows why?", appName);
         }
     }
 }
