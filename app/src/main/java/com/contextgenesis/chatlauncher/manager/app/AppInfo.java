@@ -2,6 +2,9 @@ package com.contextgenesis.chatlauncher.manager.app;
 
 import android.content.ComponentName;
 
+import lombok.Getter;
+
+@Getter
 public class AppInfo {
 
     public final ComponentName componentName;
