@@ -1,5 +1,6 @@
 package com.contextgenesis.chatlauncher.manager.input;
 
+import com.contextgenesis.chatlauncher.RootProviders;
 import com.contextgenesis.chatlauncher.command.Command;
 import com.contextgenesis.chatlauncher.command.CommandList;
 
@@ -18,18 +19,20 @@ public class InputMessage {
     private final String inputMessage;
     private final Command.Type commandType;
     private final Object[] args;
+    private final CommandList commandList;
 
     public InputMessage(String inputMessage) {
         this.inputMessage = inputMessage;
-        commandType = getCommandTypeFromInput(inputMessage);
+        this.commandList = RootProviders.get().getCommandList();
+        commandType = getCommandTypeFromInput(inputMessage, commandList);
         args = getArgsFromInput(inputMessage);
     }
 
     @NonNull
-    private static Command.Type getCommandTypeFromInput(String input) {
+    private static Command.Type getCommandTypeFromInput(String input, CommandList commandList) {
         String trimmedInput = StringUtils.trim(input);
         String commandString = getNthString(trimmedInput, 0).toLowerCase();
-        for (Command command : CommandList.get().getCommands()) {
+        for (Command command : commandList.getCommands()) {
             if (command.getName().equalsIgnoreCase(commandString)) {
                 return command.getType();
             }

@@ -2,7 +2,11 @@ package com.contextgenesis.chatlauncher.utils;
 
 import androidx.annotation.Nullable;
 
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public final class StringUtils {
+
+    private StringUtils() {
+    }
+
     /**
      * @param text input text
      * @param n    index from the input text

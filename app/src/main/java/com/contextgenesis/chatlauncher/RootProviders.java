@@ -3,6 +3,7 @@ package com.contextgenesis.chatlauncher;
 import android.app.Application;
 import android.content.Context;
 
+import com.contextgenesis.chatlauncher.command.CommandList;
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
 
 /**
@@ -15,6 +16,7 @@ public final class RootProviders {
 
     private static RootProviders rootProviders;
     private final Application application;
+    private CommandList commandList;
     private AppManager appManager;
 
     private RootProviders(Application application) {
@@ -36,6 +38,13 @@ public final class RootProviders {
             appManager = new AppManager(application.getApplicationContext().getPackageManager());
         }
         return appManager;
+    }
+
+    public CommandList getCommandList() {
+        if (commandList == null) {
+            commandList = new CommandList();
+        }
+        return commandList;
     }
 
     public Context getContext() {

@@ -9,6 +9,7 @@
     <rule ref="rulesets/java/design.xml">
         <exclude name="TooFewBranchesForASwitchStatement" />
         <exclude name="NonThreadSafeSingleton" />
+        <exclude name="UseLocaleWithCaseConversions" />
     </rule>
     <rule ref="rulesets/java/unusedcode.xml" />
 
