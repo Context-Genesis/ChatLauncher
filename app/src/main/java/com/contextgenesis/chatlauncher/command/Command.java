@@ -1,8 +1,10 @@
 package com.contextgenesis.chatlauncher.command;
 
+import lombok.Getter;
+
 public interface Command {
 
-    CommandType getType();
+    Type getType();
 
     /**
      * Name of the command
@@ -14,6 +16,17 @@ public interface Command {
      */
     String getHelpText();
 
-    String execute();
+    enum Type {
 
+        UNKNOWN(-1),
+        LAUNCH_APP(0),
+        CALL(1);
+
+        @Getter
+        private final int id;
+
+        Type(int id) {
+            this.id = id;
+        }
+    }
 }
