@@ -2,16 +2,18 @@ package com.contextgenesis.chatlauncher.command;
 
 public interface Command {
 
-    CommandType getCommandType();
+    CommandType getType();
 
     /**
      * Name of the command
      */
-    String name();
+    String getName();
 
     /**
      * Text to print happens when a command is entered wrong
      */
-    String helpText();
+    String getHelpText();
+
+    String execute();
 
 }
