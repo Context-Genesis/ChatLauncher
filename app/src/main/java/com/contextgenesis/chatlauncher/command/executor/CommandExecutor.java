@@ -3,15 +3,13 @@ package com.contextgenesis.chatlauncher.command.executor;
 import com.contextgenesis.chatlauncher.manager.input.InputMessage;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public abstract class CommandExecutor {
 
-    private final InputMessage inputMessage;
-
-    public CommandExecutor(InputMessage inputMessage) {
-        this.inputMessage = inputMessage;
-    }
+    InputMessage inputMessage;
 
     public abstract String execute();
 

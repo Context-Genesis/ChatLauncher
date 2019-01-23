@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.contextgenesis.chatlauncher.command.CommandList;
-import com.contextgenesis.chatlauncher.manager.app.AppManager;
 
 /**
  * Until we don't have Dagger, I'm using this.
@@ -17,7 +16,6 @@ public final class RootProviders {
     private static RootProviders rootProviders;
     private final Application application;
     private CommandList commandList;
-    private AppManager appManager;
 
     private RootProviders(Application application) {
         this.application = application;
@@ -31,13 +29,6 @@ public final class RootProviders {
 
     public static RootProviders get() {
         return rootProviders;
-    }
-
-    public AppManager getAppManager() {
-        if (appManager == null) {
-            appManager = new AppManager();
-        }
-        return appManager;
     }
 
     public CommandList getCommandList() {

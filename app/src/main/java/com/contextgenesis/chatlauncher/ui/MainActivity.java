@@ -14,14 +14,19 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
-import androidx.appcompat.app.AppCompatActivity;
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.DaggerActivity;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends DaggerActivity implements
         MessagesListAdapter.OnLoadMoreListener,
         MessageInput.InputListener {
+
+    @Inject
+    InputManager inputManager;
 
     @BindView(R.id.input)
     MessageInput messageInput;
@@ -31,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements
     private MessagesListAdapter<ChatMessage> messagesAdapter;
     private ChatUser chatUser;
     private ChatUser phone;
-    private InputManager inputManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements
         messagesList.setAdapter(messagesAdapter);
 
         messageInput.setInputListener(this);
-
-        inputManager = new InputManager();
     }
 
     @Override
