@@ -21,7 +21,6 @@ public class RootApplication extends DaggerApplication {
         super.onCreate();
 
         setupLogging();
-        RootProviders.init(this);
     }
 
     public void setComponent(AppComponent appComponent) {
