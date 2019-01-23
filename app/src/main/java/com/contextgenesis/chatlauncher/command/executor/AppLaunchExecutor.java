@@ -2,21 +2,19 @@ package com.contextgenesis.chatlauncher.command.executor;
 
 import android.content.Context;
 
-import com.contextgenesis.chatlauncher.RootProviders;
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
-import com.contextgenesis.chatlauncher.manager.input.InputMessage;
+
+import javax.inject.Inject;
 
 public class AppLaunchExecutor extends CommandExecutor {
 
-    private final AppManager appManager;
-    private final Context context;
-    private final InputMessage inputMessage;
+    @Inject
+    AppManager appManager;
+    @Inject
+    Context context;
 
-    public AppLaunchExecutor(InputMessage inputMessage) {
-        super(inputMessage);
-        this.inputMessage = inputMessage;
-        context = RootProviders.get().getContext();
-        appManager = RootProviders.get().getAppManager();
+    @Inject
+    public AppLaunchExecutor() {
     }
 
     @Override
