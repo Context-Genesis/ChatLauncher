@@ -9,7 +9,10 @@
     <rule ref="rulesets/java/design.xml">
         <exclude name="TooFewBranchesForASwitchStatement" />
         <exclude name="NonThreadSafeSingleton" />
-        <exclude name="UseLocaleWithCaseConversions" />
+        <exclude
+            name="UseLocaleWithCaseConversions" /> <!-- Using locale us annoying and we don't need the check yet as we're still dev-ing-->
+        <exclude
+            name="UncommentedEmptyConstructor" /> <!--This has been removed because Dagger requires empty constructors-->
     </rule>
     <rule ref="rulesets/java/unusedcode.xml" />
 

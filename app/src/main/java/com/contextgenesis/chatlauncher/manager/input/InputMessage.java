@@ -29,7 +29,7 @@ public class InputMessage {
     private static Command.Type getCommandTypeFromInput(String input) {
         String trimmedInput = StringUtils.trim(input);
         String commandString = getNthString(trimmedInput, 0).toLowerCase();
-        for (Command command : CommandList.commands) {
+        for (Command command : CommandList.COMMANDS) {
             if (command.getName().equalsIgnoreCase(commandString)) {
                 return command.getType();
             }

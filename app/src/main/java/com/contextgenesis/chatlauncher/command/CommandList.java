@@ -1,5 +1,9 @@
 package com.contextgenesis.chatlauncher.command;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A static access to all the commands we accept
  * FIXME: I'm not really sure I'm too happy with this, but idk.
@@ -7,9 +11,12 @@ package com.contextgenesis.chatlauncher.command;
  */
 public final class CommandList {
 
-    public static final Command[] commands = new Command[]{
+    private static final Command[] commands = new Command[]{
             new AppLaunchCommand()
     };
+
+    public static final List<Command> COMMANDS =
+            Collections.unmodifiableList(Arrays.asList(commands));
 
     private CommandList() {
     }
