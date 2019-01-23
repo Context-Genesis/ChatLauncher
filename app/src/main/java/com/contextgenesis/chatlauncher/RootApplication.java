@@ -1,14 +1,20 @@
 package com.contextgenesis.chatlauncher;
 
-import android.app.Application;
 import android.util.Log;
+
+import com.contextgenesis.chatlauncher.dagger.AppComponent;
+import com.contextgenesis.chatlauncher.dagger.DaggerAppComponent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
 import timber.log.Timber;
 
-public class RootApplication extends Application {
+public class RootApplication extends DaggerApplication {
+
+    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
@@ -16,6 +22,20 @@ public class RootApplication extends Application {
 
         setupLogging();
         RootProviders.init(this);
+    }
+
+    public void setComponent(AppComponent appComponent) {
+        this.appComponent = appComponent;
+    }
+
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        appComponent = DaggerAppComponent.builder().application(this).build();
+        return appComponent;
     }
 
     private void setupLogging() {
