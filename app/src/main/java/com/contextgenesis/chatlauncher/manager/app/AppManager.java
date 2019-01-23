@@ -9,20 +9,23 @@ import android.content.pm.ResolveInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import androidx.annotation.Nullable;
 
 public class AppManager {
 
-    private final PackageManager packageManager;
+    @Inject
+    PackageManager packageManager;
+
     private List<AppInfo> appList;
 
-    public AppManager(PackageManager packageManager) {
-        this.packageManager = packageManager;
-        appList = getAppList();
+    @Inject
+    public AppManager() {
     }
 
     public AppInfo getAppInfoFromName(String name) {
-        for (AppInfo appInfo : appList) {
+        for (AppInfo appInfo : getAppList()) {
             if (appInfo.getLabel().equalsIgnoreCase(name)) {
                 return appInfo;
             }

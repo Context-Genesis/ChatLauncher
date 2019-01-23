@@ -2,6 +2,7 @@ package com.contextgenesis.chatlauncher.dagger;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,4 +26,9 @@ public class AppModule {
     EasyLocationMod provideLocation(Context context, RxBus rxBus) {
         return new EasyLocationMod(context, rxBus);
     }*/
+
+    @Provides
+    PackageManager providePackageManager(Context context) {
+        return context.getPackageManager();
+    }
 }
