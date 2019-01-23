@@ -35,7 +35,7 @@ public final class RootProviders {
 
     public AppManager getAppManager() {
         if (appManager == null) {
-            appManager = new AppManager(application.getApplicationContext().getPackageManager());
+            appManager = new AppManager();
         }
         return appManager;
     }
