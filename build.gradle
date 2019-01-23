@@ -33,3 +33,9 @@ task checkCode(type: GradleBuild) {
 task checkTests(type: GradleBuild) {
     tasks = ['testDebugUnitTest', 'connectedDebugAndroidTest']
 }
+
+ext {
+    // only this version supports androidx, so let's not increment it until we have support
+    // https://stackoverflow.com/questions/51827692/injecting-androidx-fragments-using-dagger-2
+    daggerVersion = '2.16'
+}
