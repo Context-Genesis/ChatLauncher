@@ -1,18 +1,17 @@
 package com.contextgenesis.chatlauncher.command;
 
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * A static access to all the commands we accept
+ * FIXME: I'm not really sure I'm too happy with this, but idk.
+ * Should we inject this list?
+ */
+public final class CommandList {
 
-import lombok.Getter;
+    public static final Command[] commands = new Command[]{
+            new AppLaunchCommand()
+    };
 
-@Getter
-public class CommandList {
-
-    private final List<Command> commands;
-
-    public CommandList() {
-        this.commands = new ArrayList<>();
-        this.commands.add(new AppLaunchCommand());
+    private CommandList() {
     }
 
 }
