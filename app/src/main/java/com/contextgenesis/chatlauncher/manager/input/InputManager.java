@@ -2,6 +2,7 @@ package com.contextgenesis.chatlauncher.manager.input;
 
 import com.contextgenesis.chatlauncher.command.executor.AppLaunchExecutor;
 import com.contextgenesis.chatlauncher.command.executor.BluetoothToggleExecutor;
+import com.contextgenesis.chatlauncher.command.executor.CallExecutor;
 import com.contextgenesis.chatlauncher.command.executor.WifiToggleExecutor;
 
 import javax.inject.Inject;
@@ -14,10 +15,10 @@ public class InputManager {
 
     @Inject
     AppLaunchExecutor appLaunchExecutor;
-
+    @Inject
+    CallExecutor callExecutor;
     @Inject
     WifiToggleExecutor wifiToggleExecutor;
-
     @Inject
     BluetoothToggleExecutor bluetoothToggleExecutor;
 
@@ -35,6 +36,9 @@ public class InputManager {
                 return wifiToggleExecutor.execute();
             case BLUETOOTH_TOGGLE:
                 return bluetoothToggleExecutor.execute();
+            case CALL:
+                callExecutor.setInputMessage(inputMessage);
+                return callExecutor.execute();
             default:
                 return "So, here's the thing. I'm sort of dumb right now.";
         }
