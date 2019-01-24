@@ -13,7 +13,8 @@ public final class CommandList {
 
     private static final Command[] commands = new Command[]{
             new AppLaunchCommand(),
-            new WifiToggleCommand()
+            new WifiToggleCommand(),
+            new BluetoothToggleCommand()
     };
     public static final List<Command> COMMANDS =
             Collections.unmodifiableList(Arrays.asList(commands));

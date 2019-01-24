@@ -21,7 +21,8 @@ public interface Command {
         UNKNOWN(-1),
         LAUNCH_APP(0),
         CALL(1),
-        WIFI_TOGGLE(2);
+        WIFI_TOGGLE(2),
+        BLUETOOTH_TOGGLE(3);
 
         @Getter
         private final int id;
