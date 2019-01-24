@@ -95,6 +95,13 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-android-processor:${rootProject.daggerVersion}"
     testAnnotationProcessor "com.google.dagger:dagger-compiler:${rootProject.daggerVersion}"
 
+    // Rx Java 2
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+
+    // Better "Subjects" for Rx
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
+
     // tests
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
