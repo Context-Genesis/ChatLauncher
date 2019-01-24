@@ -4,6 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.contextgenesis.chatlauncher.rx.RxBus;
+import com.contextgenesis.chatlauncher.rx.RxEventBus;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,14 +26,14 @@ public class AppModule {
         return application;
     }
 
-    /*@Singleton
-    @Provides
-    EasyLocationMod provideLocation(Context context, RxBus rxBus) {
-        return new EasyLocationMod(context, rxBus);
-    }*/
-
     @Provides
     PackageManager providePackageManager(Context context) {
         return context.getPackageManager();
+    }
+
+    @Provides
+    @Singleton
+    RxBus provideRxEventBus() {
+        return new RxEventBus();
     }
 }
