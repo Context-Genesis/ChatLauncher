@@ -1,6 +1,7 @@
 package com.contextgenesis.chatlauncher.manager.input;
 
 import com.contextgenesis.chatlauncher.command.executor.AppLaunchExecutor;
+import com.contextgenesis.chatlauncher.command.executor.WifiToggleExecutor;
 
 import javax.inject.Inject;
 
@@ -14,6 +15,9 @@ public class InputManager {
     AppLaunchExecutor appLaunchExecutor;
 
     @Inject
+    WifiToggleExecutor wifiToggleExecutor;
+
+    @Inject
     public InputManager() {
     }
 
@@ -23,6 +27,8 @@ public class InputManager {
             case LAUNCH_APP:
                 appLaunchExecutor.setInputMessage(inputMessage);
                 return appLaunchExecutor.execute();
+            case WIFI_TOGGLE:
+                return wifiToggleExecutor.execute();
             default:
                 return "So, here's the thing. I'm sort of dumb right now.";
         }

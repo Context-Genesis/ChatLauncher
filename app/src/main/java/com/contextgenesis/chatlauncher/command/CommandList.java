@@ -12,9 +12,9 @@ import java.util.List;
 public final class CommandList {
 
     private static final Command[] commands = new Command[]{
-            new AppLaunchCommand()
+            new AppLaunchCommand(),
+            new WifiToggleCommand()
     };
-
     public static final List<Command> COMMANDS =
             Collections.unmodifiableList(Arrays.asList(commands));
 
