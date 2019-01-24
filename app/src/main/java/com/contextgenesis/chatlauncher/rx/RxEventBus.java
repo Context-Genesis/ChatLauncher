@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 public class RxEventBus implements RxBus {
 
-    private Relay<Object> busSubject;
+    private final Relay<Object> busSubject;
 
     public RxEventBus() {
         busSubject = PublishRelay.create().toSerialized();
