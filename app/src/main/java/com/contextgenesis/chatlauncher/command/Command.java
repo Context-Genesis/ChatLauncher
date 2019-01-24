@@ -20,7 +20,8 @@ public interface Command {
 
         UNKNOWN(-1),
         LAUNCH_APP(0),
-        CALL(1);
+        CALL(1),
+        WIFI_TOGGLE(2);
 
         @Getter
         private final int id;
