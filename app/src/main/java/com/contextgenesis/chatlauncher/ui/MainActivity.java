@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.DaggerActivity;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
@@ -64,19 +65,24 @@ public class MainActivity extends DaggerActivity implements
         messagesList.setAdapter(messagesAdapter);
 
         messageInput.setInputListener(this);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         disposable.add(registerPermissionsEvent());
         disposable.add(registerOutputMessageEvent());
     }
 
     @Override
-    protected void onPause() {
-        disposable.dispose();
-        super.onPause();
+    protected void onStop() {
+        disposable.clear();
+        super.onStop();
     }
 
     private Disposable registerPermissionsEvent() {
         return rxBus.register(PermissionsEvent.class)
+                .observeOn(schedulerProvider.androidThread())
                 .subscribeOn(schedulerProvider.androidThread())
                 .subscribe(event -> {
                     if (event.getType() == PermissionsEvent.Type.REQUEST) {
@@ -88,10 +94,11 @@ public class MainActivity extends DaggerActivity implements
 
     private Disposable registerOutputMessageEvent() {
         return rxBus.register(OutputMessageEvent.class)
+                .observeOn(schedulerProvider.androidThread())
                 .subscribeOn(schedulerProvider.androidThread())
                 .subscribe(event -> {
                     messagesAdapter.addToStart(new ChatMessage("android", getPhone(),
-                            event.getMessage()), false);
+                            event.getMessage()), true);
                 });
     }
 
@@ -117,7 +124,12 @@ public class MainActivity extends DaggerActivity implements
                 StringUtils.trim(input.toString()));
         messagesAdapter.addToStart(userInputMessage, true);
 
-        inputManager.executeInput(userInputMessage.getText());
+        // run in background
+        Observable
+                .create(emitter -> emitter.onNext(new Object()))
+                .observeOn(schedulerProvider.runOnBackground())
+                .subscribeOn(schedulerProvider.runOnBackground())
+                .subscribe(__ -> inputManager.executeInput(userInputMessage.getText()));
         return true;
     }
 
