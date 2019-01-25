@@ -18,16 +18,16 @@ public class AppLaunchExecutor extends CommandExecutor {
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         if (inputMessage.getArgs().length <= 0) {
-            return "Tell me what you want to launch!";
-        }
-
-        String appName = (String) inputMessage.getArgs()[0];
-        if (appManager.launchApp(context, appManager.getAppInfoFromName(appName))) {
-            return String.format("Launching %s", appName);
+            postOutput("Tell me what you want to launch!");
         } else {
-            return String.format("Unable to open %s. Who knows why?", appName);
+            String appName = (String) inputMessage.getArgs()[0];
+            if (appManager.launchApp(context, appManager.getAppInfoFromName(appName))) {
+                postOutput(String.format("Launching %s", appName));
+            } else {
+                postOutput(String.format("Unable to open %s. Who knows why?", appName));
+            }
         }
     }
 }

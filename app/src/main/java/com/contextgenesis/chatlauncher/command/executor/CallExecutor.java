@@ -22,9 +22,9 @@ public class CallExecutor extends CommandExecutor {
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         if (inputMessage.getArgs().length <= 0) {
-            return "Tell me who you want to call!";
+            postOutput("Tell me who you want to call!");
         }
 
         String input = (String) inputMessage.getArgs()[0];
@@ -34,9 +34,9 @@ public class CallExecutor extends CommandExecutor {
         }
 
         if (callManager.call(input)) {
-            return "Calling " + input;
+            postOutput("Calling " + input);
         } else {
-            return "Unable to call";
+            postOutput("Unable to call");
         }
     }
 }

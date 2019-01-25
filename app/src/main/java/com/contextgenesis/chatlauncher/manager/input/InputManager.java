@@ -4,6 +4,8 @@ import com.contextgenesis.chatlauncher.command.executor.AppLaunchExecutor;
 import com.contextgenesis.chatlauncher.command.executor.BluetoothToggleExecutor;
 import com.contextgenesis.chatlauncher.command.executor.CallExecutor;
 import com.contextgenesis.chatlauncher.command.executor.WifiToggleExecutor;
+import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
+import com.contextgenesis.chatlauncher.rx.RxBus;
 
 import javax.inject.Inject;
 
@@ -13,6 +15,8 @@ import javax.inject.Inject;
  */
 public class InputManager {
 
+    @Inject
+    RxBus rxBus;
     @Inject
     AppLaunchExecutor appLaunchExecutor;
     @Inject
@@ -26,21 +30,26 @@ public class InputManager {
     public InputManager() {
     }
 
-    public String executeInput(String input) {
+    public void executeInput(String input) {
         InputMessage inputMessage = new InputMessage(input);
         switch (inputMessage.getCommandType()) {
             case LAUNCH_APP:
                 appLaunchExecutor.setInputMessage(inputMessage);
-                return appLaunchExecutor.execute();
+                appLaunchExecutor.execute();
+                break;
             case WIFI_TOGGLE:
-                return wifiToggleExecutor.execute();
+                wifiToggleExecutor.execute();
+                break;
             case BLUETOOTH_TOGGLE:
-                return bluetoothToggleExecutor.execute();
+                bluetoothToggleExecutor.execute();
+                break;
             case CALL:
                 callExecutor.setInputMessage(inputMessage);
-                return callExecutor.execute();
+                callExecutor.execute();
+                break;
             default:
-                return "So, here's the thing. I'm sort of dumb right now.";
+                rxBus.post(new OutputMessageEvent("So, here's the thing. I'm sort of dumb right now."));
+                break;
         }
     }
 
