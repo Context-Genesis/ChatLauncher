@@ -29,11 +29,11 @@ public class CallManager {
         String number = getNumberFromContact(numberOrContact);
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
-        if (!isCallPermissionGranted()) {
-            return false;
-        } else {
+        if (isCallPermissionGranted()) {
             context.startActivity(callIntent);
             return true;
+        } else {
+            return false;
         }
     }
 

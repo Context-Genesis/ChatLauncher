@@ -28,8 +28,9 @@ public class PermissionsEvent extends Event {
                     return GRANTED;
                 case PackageManager.PERMISSION_DENIED:
                     return DENIED;
+                default:
+                    return null;
             }
-            return null;
         }
     }
 

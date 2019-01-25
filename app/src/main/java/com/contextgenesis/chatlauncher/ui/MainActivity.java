@@ -35,23 +35,20 @@ public class MainActivity extends DaggerActivity implements
         MessageInput.InputListener {
 
     private static final int PERMISSION_REQUEST_CODE = 10;
-
+    private final CompositeDisposable disposable = new CompositeDisposable();
     @Inject
     RxBus rxBus;
     @Inject
     BaseSchedulerProvider schedulerProvider;
     @Inject
     InputManager inputManager;
-
     @BindView(R.id.input)
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
-
     private MessagesListAdapter<ChatMessage> messagesAdapter;
     private ChatUser chatUser;
     private ChatUser phone;
-    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
