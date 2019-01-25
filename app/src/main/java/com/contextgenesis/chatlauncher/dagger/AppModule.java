@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 
 import com.contextgenesis.chatlauncher.rx.RxBus;
 import com.contextgenesis.chatlauncher.rx.RxEventBus;
+import com.contextgenesis.chatlauncher.rx.scheduler.BaseSchedulerProvider;
+import com.contextgenesis.chatlauncher.rx.scheduler.SchedulerProvider;
 
 import javax.inject.Singleton;
 
@@ -35,5 +37,11 @@ public class AppModule {
     @Singleton
     RxBus provideRxEventBus() {
         return new RxEventBus();
+    }
+
+    @Provides
+    @Singleton
+    BaseSchedulerProvider provideSchedulerProvider() {
+        return new SchedulerProvider();
     }
 }

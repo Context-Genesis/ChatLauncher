@@ -18,24 +18,23 @@ public class CallManager {
     public CallManager() {
     }
 
+    public boolean isCallPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
     public boolean call(String numberOrContact) {
         String number = getNumberFromContact(numberOrContact);
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //   Activity#requestPermissions
-                //   here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                //   to handle the case where the user grants the permission. See the documentation
-                //   for Activity#requestPermissions for more details.
-                return false;
-            }
+        if (!isCallPermissionGranted()) {
+            return false;
+        } else {
+            context.startActivity(callIntent);
+            return true;
         }
-        context.startActivity(callIntent);
-        return true;
     }
 
     private String getNumberFromContact(String input) {
