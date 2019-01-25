@@ -11,14 +11,14 @@ public class BluetoothToggleExecutor extends CommandExecutor {
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         BluetoothAdapter bAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bAdapter.isEnabled()) {
             bAdapter.disable();
-            return "Bluetooth switched off";
+            postOutput("Bluetooth switched off");
         } else {
             bAdapter.enable();
-            return "Bluetooth switched on";
+            postOutput("Bluetooth switched on");
         }
     }
 }

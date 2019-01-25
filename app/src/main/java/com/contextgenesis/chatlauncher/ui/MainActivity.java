@@ -3,6 +3,7 @@ package com.contextgenesis.chatlauncher.ui;
 import android.os.Bundle;
 
 import com.contextgenesis.chatlauncher.R;
+import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.events.PermissionsEvent;
 import com.contextgenesis.chatlauncher.manager.input.InputManager;
 import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
@@ -65,6 +66,7 @@ public class MainActivity extends DaggerActivity implements
         messageInput.setInputListener(this);
 
         disposable.add(registerPermissionsEvent());
+        disposable.add(registerOutputMessageEvent());
     }
 
     @Override
@@ -81,6 +83,15 @@ public class MainActivity extends DaggerActivity implements
                         ActivityCompat.requestPermissions(this,
                                 new String[]{event.getPermissions()}, PERMISSION_REQUEST_CODE);
                     }
+                });
+    }
+
+    private Disposable registerOutputMessageEvent() {
+        return rxBus.register(OutputMessageEvent.class)
+                .subscribeOn(schedulerProvider.androidThread())
+                .subscribe(event -> {
+                    messagesAdapter.addToStart(new ChatMessage("android", getPhone(),
+                            event.getMessage()), false);
                 });
     }
 
@@ -106,8 +117,7 @@ public class MainActivity extends DaggerActivity implements
                 StringUtils.trim(input.toString()));
         messagesAdapter.addToStart(userInputMessage, true);
 
-        String response = inputManager.executeInput(userInputMessage.getText());
-        messagesAdapter.addToStart(new ChatMessage("android", getPhone(), response), false);
+        inputManager.executeInput(userInputMessage.getText());
         return true;
     }
 

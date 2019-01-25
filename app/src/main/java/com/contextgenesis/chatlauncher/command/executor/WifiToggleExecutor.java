@@ -15,14 +15,14 @@ public class WifiToggleExecutor extends CommandExecutor {
     }
 
     @Override
-    public String execute() {
+    public void execute() {
         WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifi.isWifiEnabled()) {
             wifi.setWifiEnabled(false);
-            return "Wifi switched off";
+            postOutput("Wifi switched off");
         } else {
             wifi.setWifiEnabled(true);
-            return "Wifi switched on";
+            postOutput("Wifi switched on");
         }
     }
 }
