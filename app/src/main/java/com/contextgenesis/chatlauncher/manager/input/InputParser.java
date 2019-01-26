@@ -34,7 +34,7 @@ public class InputParser {
 
         // todo add a check for the data within the args
 
-        return new InputMessage(input);
+        return InputMessage.validMessage(input, commandType, args);
     }
 
     @NonNull
