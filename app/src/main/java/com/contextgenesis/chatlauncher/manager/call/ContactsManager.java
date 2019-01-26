@@ -1,8 +1,11 @@
 package com.contextgenesis.chatlauncher.manager.call;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.provider.ContactsContract;
 
 import java.util.ArrayList;
@@ -21,7 +24,21 @@ public class ContactsManager {
     public ContactsManager() {
     }
 
+    public boolean isContactsPermissionsGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    /**
+     * If we don't have the permission to read contacts, it means the contact is valid; we have
+     * no way to really know
+     */
     public boolean isContactNameValid(String name) {
+        if (!isContactsPermissionsGranted()) {
+            return true;
+        }
         for (ContactInfo contactInfo : getContacts()) {
             if (contactInfo.getContactName().equalsIgnoreCase(name)) {
                 return true;
@@ -31,6 +48,9 @@ public class ContactsManager {
     }
 
     public List<ContactInfo> getContacts() {
+        if (!isContactsPermissionsGranted()) {
+            return new ArrayList<>();
+        }
         if (contacts == null) {
             contacts = getContactsFromCursor();
         }
@@ -70,5 +90,4 @@ public class ContactsManager {
         }
         return contacts;
     }
-
 }
