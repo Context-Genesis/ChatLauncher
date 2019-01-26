@@ -1,6 +1,5 @@
 package com.contextgenesis.chatlauncher.command;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /***
@@ -39,7 +38,6 @@ public interface Command {
         }
     }
 
-    @AllArgsConstructor
     @Getter
     class ArgInfo {
 
@@ -59,6 +57,14 @@ public interface Command {
             this.identifier = identifier;
             this.type = type;
             this.predefinedInputs = new String[0];
+        }
+
+        @SuppressWarnings("PMD.UseVarargs")
+        public ArgInfo(boolean isRequired, String identifier, Type type, String[] predefinedInputs) {
+            this.isRequired = isRequired;
+            this.identifier = identifier;
+            this.type = type;
+            this.predefinedInputs = predefinedInputs.clone();
         }
 
         public enum Type {
