@@ -13,6 +13,13 @@ public class AppLaunchCommand implements Command {
     }
 
     @Override
+    public ArgInfo[] getArgs() {
+        return new ArgInfo[]{
+                new ArgInfo(true, "", ArgInfo.Type.APPS)
+        };
+    }
+
+    @Override
     public String getHelpText() {
         return "enter the name of the app to open it";
     }
