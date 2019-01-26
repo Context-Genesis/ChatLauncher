@@ -25,31 +25,37 @@ public class InputManager {
     WifiToggleExecutor wifiToggleExecutor;
     @Inject
     BluetoothToggleExecutor bluetoothToggleExecutor;
+    @Inject
+    InputParser inputParser;
 
     @Inject
     public InputManager() {
     }
 
     public void executeInput(String input) {
-        InputMessage inputMessage = new InputMessage(input);
-        switch (inputMessage.getCommandType()) {
-            case LAUNCH_APP:
-                appLaunchExecutor.setInputMessage(inputMessage);
-                appLaunchExecutor.execute();
-                break;
-            case WIFI_TOGGLE:
-                wifiToggleExecutor.execute();
-                break;
-            case BLUETOOTH_TOGGLE:
-                bluetoothToggleExecutor.execute();
-                break;
-            case CALL:
-                callExecutor.setInputMessage(inputMessage);
-                callExecutor.execute();
-                break;
-            default:
-                rxBus.post(new OutputMessageEvent("So, here's the thing. I'm sort of dumb right now."));
-                break;
+        InputMessage inputMessage = inputParser.parse(input);
+        if (inputMessage.isValid()) {
+            switch (inputMessage.getCommandType()) {
+                case LAUNCH_APP:
+                    appLaunchExecutor.setInputMessage(inputMessage);
+                    appLaunchExecutor.execute();
+                    break;
+                case WIFI_TOGGLE:
+                    wifiToggleExecutor.execute();
+                    break;
+                case BLUETOOTH_TOGGLE:
+                    bluetoothToggleExecutor.execute();
+                    break;
+                case CALL:
+                    callExecutor.setInputMessage(inputMessage);
+                    callExecutor.execute();
+                    break;
+                default:
+                    rxBus.post(new OutputMessageEvent("So, here's the thing. I'm sort of dumb right now."));
+                    break;
+            }
+        } else {
+            rxBus.post(new OutputMessageEvent("Bad input message. I'm supposed to have info on why this is dumb, but my makers were lazy."));
         }
     }
 
