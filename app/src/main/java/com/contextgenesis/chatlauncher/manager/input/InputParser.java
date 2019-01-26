@@ -37,7 +37,7 @@ public class InputParser {
             return InputMessage.invalidMessage(input, commandType);
         }
 
-        // todo validate number of args
+        // todo validate number of args; make sure we have at least all those that are required
         String[] args = getArgsFromInput(commandType, input);
         if (args == null) {
             return InputMessage.invalidMessage(input, commandType);
@@ -55,6 +55,17 @@ public class InputParser {
                         break;
                     case CONTACTS:
                         if (!contactsManager.isContactNameValid(args[i])) {
+                            return InputMessage.invalidMessage(input, commandType);
+                        }
+                        break;
+                    case PREDEFINED:
+                        boolean oneValidFound = false;
+                        for (String validInput : argsInfo[i].getPredefinedInputs()) {
+                            if (validInput.equalsIgnoreCase(args[0])) {
+                                oneValidFound = true;
+                            }
+                        }
+                        if (!oneValidFound) {
                             return InputMessage.invalidMessage(input, commandType);
                         }
                         break;

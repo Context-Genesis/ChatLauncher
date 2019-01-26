@@ -15,7 +15,10 @@ public class WifiToggleCommand implements Command {
     @Override
     public ArgInfo[] getArgs() {
         return new ArgInfo[]{
-                new ArgInfo(false, "", ArgInfo.Type.PREDEFINED)
+                new ArgInfo(false, "", ArgInfo.Type.PREDEFINED, new String[]{
+                        "on",
+                        "off"
+                })
         };
     }
 
