@@ -13,6 +13,13 @@ public class BluetoothToggleCommand implements Command {
     }
 
     @Override
+    public ArgInfo[] getArgs() {
+        return new ArgInfo[]{
+                new ArgInfo(false, "", ArgInfo.Type.PREDEFINED)
+        };
+    }
+
+    @Override
     public String getHelpText() {
         return "something went wrong";
     }
