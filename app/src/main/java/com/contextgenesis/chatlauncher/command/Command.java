@@ -52,6 +52,14 @@ public interface Command {
          */
         private final String identifier;
         private final ArgInfo.Type type;
+        private final String[] predefinedInputs;
+
+        public ArgInfo(boolean isRequired, String identifier, Type type) {
+            this.isRequired = isRequired;
+            this.identifier = identifier;
+            this.type = type;
+            this.predefinedInputs = new String[0];
+        }
 
         public enum Type {
             APPS(0),
