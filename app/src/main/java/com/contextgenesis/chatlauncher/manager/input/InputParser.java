@@ -2,6 +2,7 @@ package com.contextgenesis.chatlauncher.manager.input;
 
 import com.contextgenesis.chatlauncher.command.Command;
 import com.contextgenesis.chatlauncher.command.CommandList;
+import com.contextgenesis.chatlauncher.manager.app.AppManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,6 +15,9 @@ import static com.contextgenesis.chatlauncher.utils.StringUtils.getNthString;
 public class InputParser {
 
     @Inject
+    AppManager appManager;
+
+    @Inject
     public InputParser() {
     }
 
@@ -24,16 +28,31 @@ public class InputParser {
     public InputMessage parse(String input) {
         input = StringUtils.trim(input);
         Command.Type commandType = getCommandTypeFromInput(input);
+
+        // validate command enum
         if (commandType == Command.Type.UNKNOWN) {
             return InputMessage.invalidMessage(input, commandType);
         }
 
+        // todo validate number of args
         String[] args = getArgsFromInput(commandType, input);
         if (args == null) {
             return InputMessage.invalidMessage(input, commandType);
         }
 
-        // todo add a check for the data within the args
+        // check for the data within the args
+        Command.ArgInfo[] argsInfo = CommandList.get(commandType).getArgs();
+        for (int i = 0; i < argsInfo.length; i++) {
+            if (argsInfo[i].isRequired()) {
+                switch (argsInfo[i].getType()) {
+                    case APPS:
+                        if (!appManager.isAppNameValid(args[i])) {
+                            return InputMessage.invalidMessage(input, commandType);
+                        }
+                        break;
+                }
+            }
+        }
 
         return InputMessage.validMessage(input, commandType, args);
     }

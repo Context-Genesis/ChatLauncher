@@ -53,7 +53,7 @@ public interface Command {
         private final String identifier;
         private final ArgInfo.Type type;
 
-        enum Type {
+        public enum Type {
             APPS(0),
             CONTACTS(1),
             PREDEFINED(2);
