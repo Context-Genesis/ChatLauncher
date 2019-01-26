@@ -22,6 +22,7 @@ public class InputParser {
      * and flags whether it is valid or not.
      */
     public InputMessage parse(String input) {
+        input = StringUtils.trim(input);
         Command.Type commandType = getCommandTypeFromInput(input);
         if (commandType == Command.Type.UNKNOWN) {
             return InputMessage.invalidMessage(input, commandType);
@@ -59,17 +60,18 @@ public class InputParser {
             return null;
         }
 
-        String inputArgsOnly = input.substring(input.indexOf(command.getName()) + command.getName().length());
+        String inputArgsOnly = StringUtils.trim(input.substring(
+                input.toLowerCase().indexOf(command.getName()) + command.getName().length()));
 
         Command.ArgInfo[] args = command.getArgs();
         String[] argsString = new String[args.length];
         int previousSplitIndex = 0;
         for (int i = 0; i < args.length; i++) {
             if (i == args.length - 1) {
-                argsString[i] = inputArgsOnly.substring(previousSplitIndex);
+                argsString[i] = StringUtils.trim(inputArgsOnly.substring(previousSplitIndex));
             } else {
                 int nextSplitIndex = inputArgsOnly.indexOf(args[i].getIdentifier());
-                argsString[i] = inputArgsOnly.substring(previousSplitIndex, nextSplitIndex);
+                argsString[i] = StringUtils.trim(inputArgsOnly.substring(previousSplitIndex, nextSplitIndex));
                 previousSplitIndex = nextSplitIndex + args[i].getIdentifier().length();
             }
         }
