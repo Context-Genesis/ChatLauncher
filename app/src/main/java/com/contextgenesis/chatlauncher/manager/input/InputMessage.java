@@ -18,11 +18,19 @@ public class InputMessage {
     private final String inputMessage;
     private final Command.Type commandType;
     private final Object[] args;
+    private boolean isValid;
 
     public InputMessage(String inputMessage) {
         this.inputMessage = inputMessage;
         commandType = getCommandTypeFromInput(inputMessage);
         args = getArgsFromInput(inputMessage);
+        isValid = true;
+    }
+
+    public static InputMessage invalidMessage(String inputMessage, Command.Type commandType) {
+        InputMessage msg = new InputMessage(inputMessage);
+        msg.isValid = false;
+        return msg;
     }
 
     @NonNull

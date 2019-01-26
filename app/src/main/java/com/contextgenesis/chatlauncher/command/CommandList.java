@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * A static access to all the commands we accept
  * FIXME: I'm not really sure I'm too happy with this, but idk.
@@ -22,6 +24,16 @@ public final class CommandList {
             Collections.unmodifiableList(Arrays.asList(commands));
 
     private CommandList() {
+    }
+
+    @Nullable
+    public static Command get(Command.Type type) {
+        for (Command command : COMMANDS) {
+            if (command.getType() == type) {
+                return command;
+            }
+        }
+        return null;
     }
 
 }
