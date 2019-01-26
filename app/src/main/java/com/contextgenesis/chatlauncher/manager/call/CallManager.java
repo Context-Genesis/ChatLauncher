@@ -7,12 +7,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.inject.Inject;
 
 public class CallManager {
 
     @Inject
     Context context;
+    @Inject
+    ContactsManager contactsManager;
 
     @Inject
     public CallManager() {
@@ -38,7 +42,14 @@ public class CallManager {
     }
 
     private String getNumberFromContact(String input) {
-        return input;
+        if (StringUtils.isNumeric(input)) {
+            return input;
+        }
+        ContactInfo contactInfo = contactsManager.getContact(input);
+        if (contactInfo == null) {
+            return input;
+        }
+        return contactInfo.getPhoneNumber();
     }
 
 }
