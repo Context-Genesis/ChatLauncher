@@ -29,18 +29,18 @@ public class InputParser {
      * and flags whether it is valid or not.
      */
     public InputMessage parse(String input) {
-        input = StringUtils.trim(input);
-        Command.Type commandType = getCommandTypeFromInput(input);
+        String trimInput = StringUtils.trim(input);
+        Command.Type commandType = getCommandTypeFromInput(trimInput);
 
         // validate command enum
         if (commandType == Command.Type.UNKNOWN) {
-            return InputMessage.invalidMessage(input, commandType);
+            return InputMessage.invalidMessage(trimInput, commandType);
         }
 
         // todo validate number of args; make sure we have at least all those that are required
-        String[] args = getArgsFromInput(commandType, input);
+        String[] args = getArgsFromInput(commandType, trimInput);
         if (args == null) {
-            return InputMessage.invalidMessage(input, commandType);
+            return InputMessage.invalidMessage(trimInput, commandType);
         }
 
         // check for the data within the args
@@ -50,12 +50,12 @@ public class InputParser {
                 switch (argsInfo[i].getType()) {
                     case APPS:
                         if (!appManager.isAppNameValid(args[i])) {
-                            return InputMessage.invalidMessage(input, commandType);
+                            return InputMessage.invalidMessage(trimInput, commandType);
                         }
                         break;
                     case CONTACTS:
                         if (!contactsManager.isContactNameValid(args[i]) || StringUtils.isNumeric(args[i])) {
-                            return InputMessage.invalidMessage(input, commandType);
+                            return InputMessage.invalidMessage(trimInput, commandType);
                         }
                         break;
                     case PREDEFINED:
@@ -66,14 +66,16 @@ public class InputParser {
                             }
                         }
                         if (!oneValidFound) {
-                            return InputMessage.invalidMessage(input, commandType);
+                            return InputMessage.invalidMessage(trimInput, commandType);
                         }
+                        break;
+                    default:
                         break;
                 }
             }
         }
 
-        return InputMessage.validMessage(input, commandType, args);
+        return InputMessage.validMessage(trimInput, commandType, args);
     }
 
     @NonNull

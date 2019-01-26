@@ -59,6 +59,7 @@ public class ContactsManager {
         return contacts;
     }
 
+    @SuppressWarnings({"PMD.AvoidDeeplyNestedIfStmts", "PMD.ConfusingTernary"})
     private List<ContactInfo> getContactsFromCursor() {
         List<ContactInfo> contacts = new ArrayList<>();
 
