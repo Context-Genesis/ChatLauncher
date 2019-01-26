@@ -54,7 +54,7 @@ public class InputParser {
                         }
                         break;
                     case CONTACTS:
-                        if (!contactsManager.isContactNameValid(args[i])) {
+                        if (!contactsManager.isContactNameValid(args[i]) || StringUtils.isNumeric(args[i])) {
                             return InputMessage.invalidMessage(input, commandType);
                         }
                         break;

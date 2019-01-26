@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
+
 public class ContactsManager {
 
     @Inject
@@ -89,5 +91,19 @@ public class ContactsManager {
             cursor.close();
         }
         return contacts;
+    }
+
+    @Nullable
+    public ContactInfo getContact(String nameOrNumber) {
+        if (!isContactsPermissionsGranted()) {
+            return null;
+        }
+        for (ContactInfo contactInfo : getContacts()) {
+            if (contactInfo.getContactName().equalsIgnoreCase(nameOrNumber)
+                    || contactInfo.getPhoneNumber().equalsIgnoreCase(nameOrNumber)) {
+                return contactInfo;
+            }
+        }
+        return null;
     }
 }
