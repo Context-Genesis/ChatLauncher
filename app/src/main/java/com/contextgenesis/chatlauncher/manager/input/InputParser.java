@@ -3,6 +3,7 @@ package com.contextgenesis.chatlauncher.manager.input;
 import com.contextgenesis.chatlauncher.command.Command;
 import com.contextgenesis.chatlauncher.command.CommandList;
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
+import com.contextgenesis.chatlauncher.manager.call.ContactsManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +17,8 @@ public class InputParser {
 
     @Inject
     AppManager appManager;
+    @Inject
+    ContactsManager contactsManager;
 
     @Inject
     public InputParser() {
@@ -47,6 +50,11 @@ public class InputParser {
                 switch (argsInfo[i].getType()) {
                     case APPS:
                         if (!appManager.isAppNameValid(args[i])) {
+                            return InputMessage.invalidMessage(input, commandType);
+                        }
+                        break;
+                    case CONTACTS:
+                        if (!contactsManager.isContactNameValid(args[i])) {
                             return InputMessage.invalidMessage(input, commandType);
                         }
                         break;
