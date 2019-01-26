@@ -67,4 +67,7 @@ public class AppManager {
         }
     }
 
+    public boolean isAppNameValid(String name) {
+        return getAppInfoFromName(name) != null;
+    }
 }
