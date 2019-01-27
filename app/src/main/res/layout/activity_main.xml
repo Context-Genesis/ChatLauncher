@@ -10,14 +10,15 @@
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/input"
-        app:incomingDefaultBubbleColor="@color/white"
+        android:layout_above="@+id/divider"
+        android:background="@drawable/chat_background"
+        app:incomingDefaultBubbleColor="@color/incoming_background_color"
         app:incomingTextColor="@color/incoming_text_color"
         app:incomingTextLinkColor="@color/incoming_link_color"
         app:incomingTextSize="@dimen/chat_text_size_normal"
         app:incomingTimeTextColor="@color/incoming_date_color"
         app:incomingTimeTextSize="@dimen/chat_text_size_normal"
-        app:outcomingDefaultBubbleColor="@color/white_two"
+        app:outcomingDefaultBubbleColor="@color/outgoing_background_color"
         app:outcomingTextColor="@color/outgoing_text_color"
         app:outcomingTextLinkColor="@color/outgoing_link_color"
         app:outcomingTextSize="@dimen/chat_text_size_normal"
@@ -25,11 +26,20 @@
         app:outcomingTimeTextSize="@dimen/chat_text_size_normal"
         app:textAutoLink="all" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@id/input"
+        android:background="@color/divider" />
+    
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/input_background"
+        android:elevation="8dp"
         app:inputHint="@string/hint_enter_a_message" />
 
 </RelativeLayout>
