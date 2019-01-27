@@ -52,6 +52,14 @@ public class InputParser {
 
         // todo validate number of args; make sure we have at least all those that are required
         String[] args = getArgsFromInput(commandType, trimInput);
+
+        // check on number of arguments
+        if (commandType == Command.Type.ALIAS_ADD) {
+            if (args.length < 2) {
+                return InputMessage.invalidMessage(trimInput, commandType);
+            }
+        }
+
         if (args == null) {
             return InputMessage.invalidMessage(trimInput, commandType);
         }
@@ -72,21 +80,19 @@ public class InputParser {
                         }
                         break;
                     case ALIAS_ADD:
-                        if (!args[i].contains("=")) {
-                            return InputMessage.invalidMessage(trimInput, commandType);
-                        }
-                        else{
-                            // arg[0] : aliasName=aliasCommand
-                            String aliasArgs[] = args[i].split("=");
-                            String aliasName = aliasArgs[0];
+                        if (i == 0) {
+                            // arg[0] : aliasName
+                            String aliasName = args[i];
                             // if the alias alreadyExists
-                            if(aliasManager.containsAlias(aliasName.trim())){
+                            if (aliasManager.containsAlias(aliasName.trim())) {
                                 return InputMessage.invalidMessage(trimInput, commandType);
                             }
+                        } else {
+                            // arg[1] : command
                             // aliasCommand also needs to be validated
-                            String aliasCommand = aliasArgs[1].trim();
+                            String aliasCommand = args[i].trim();
                             InputMessage aliasCommandValid = parse(aliasCommand);
-                            if(!aliasCommandValid.isValid()){
+                            if (!aliasCommandValid.isValid()) {
                                 return InputMessage.invalidMessage(trimInput, commandType);
                             }
                         }
@@ -138,14 +144,27 @@ public class InputParser {
 
         Command.ArgInfo[] args = command.getArgs();
         String[] argsString = new String[args.length];
-        int previousSplitIndex = 0;
+        String previousNotEmpty = "";
+        int previousNotEmptyIndex = 0;
         for (int i = 0; i < args.length; i++) {
-            if (i == args.length - 1) {
-                argsString[i] = StringUtils.trim(inputArgsOnly.substring(previousSplitIndex));
-            } else {
-                int nextSplitIndex = inputArgsOnly.indexOf(args[i].getIdentifier());
-                argsString[i] = StringUtils.trim(inputArgsOnly.substring(previousSplitIndex, nextSplitIndex));
-                previousSplitIndex = nextSplitIndex + args[i].getIdentifier().length();
+            if (i == 0) {
+                argsString[i] = inputArgsOnly;
+                previousNotEmpty = argsString[0];
+                continue;
+            }
+            String identifier = args[i].getIdentifier();
+            if (!StringUtils.isEmpty(identifier) && previousNotEmpty.contains(identifier)) {
+                String afterSplit[] = previousNotEmpty.split(identifier, 2);
+                argsString[i] = afterSplit[1];
+                argsString[previousNotEmptyIndex] = afterSplit[0];
+
+                // setting the previous parameters correctly
+                previousNotEmpty = argsString[i];
+                previousNotEmptyIndex = i;
+            } else if (args[i].isRequired()) {
+                // error scenario when we dont have a mandatory argument
+                // returning an empty array will do, as it will later fail the check when we try to match the argument count
+                return new String[]{};
             }
         }
 
