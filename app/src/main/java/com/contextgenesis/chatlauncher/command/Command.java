@@ -29,7 +29,8 @@ public interface Command {
         CALL(1),
         WIFI_TOGGLE(2),
         BLUETOOTH_TOGGLE(3),
-        ALIAS_ADD(4);
+        ALIAS_ADD(4),
+        ALIAS_REMOVE(5);
 
         @Getter
         private final int id;
@@ -72,7 +73,8 @@ public interface Command {
             APPS(0),
             CONTACTS(1),
             PREDEFINED(2),
-            ALIAS_ADD(3);
+            ALIAS_ADD(3),
+            ALIAS_REMOVE(4);
 
             @Getter
             private final int id;
