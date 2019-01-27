@@ -34,14 +34,14 @@ public class InputParser {
      * and flags whether it is valid or not.
      */
     public InputMessage parse(String input) {
+        String trimInput = StringUtils.trim(input);
 
         // check if the input command is an alias
-        if (aliasManager.containsAlias(input)) {
-            Alias alias = aliasManager.getAlias(input);
+        if (aliasManager.containsAlias(trimInput)) {
+            Alias alias = aliasManager.getAlias(trimInput);
             // changing to input to the input associated with the alias
-            input = alias.getCommand().trim();
+            trimInput = alias.getCommand().trim();
         }
-        String trimInput = StringUtils.trim(input);
 
         Command.Type commandType = getCommandTypeFromInput(trimInput);
 
