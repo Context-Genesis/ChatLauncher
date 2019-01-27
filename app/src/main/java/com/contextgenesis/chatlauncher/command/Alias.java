@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public class Alias {
 
-    private String aliasName;
-    private String command;
+    private final String aliasName;
+    private final String command;
 
     public Alias(String aliasName, String command) {
         this.aliasName = aliasName;
@@ -15,6 +15,9 @@ public class Alias {
 
     @Override
     public boolean equals(Object o) {
+        if (!(o instanceof Alias)) {
+            return false;
+        }
         Alias aliasObj = (Alias) o;
         return aliasName.equals(aliasObj.aliasName);
     }

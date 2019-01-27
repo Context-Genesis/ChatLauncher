@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 @Singleton
 public class AliasManager {
 
-    private Set<Alias> aliasSet;
+    private final Set<Alias> aliasSet;
 
     // TODO: inject DAO
 
