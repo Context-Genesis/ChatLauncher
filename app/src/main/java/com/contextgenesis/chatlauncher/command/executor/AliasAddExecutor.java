@@ -16,7 +16,6 @@ public class AliasAddExecutor extends CommandExecutor {
     @Override
     public void execute() {
         String args[] = (String[]) inputMessage.getArgs();
-        String input[] = args[0].split("=");
-        aliasManager.addAlias(input[0].trim(), input[1].trim());
+        aliasManager.addAlias(args[0].trim(), args[1].trim());
     }
 }
