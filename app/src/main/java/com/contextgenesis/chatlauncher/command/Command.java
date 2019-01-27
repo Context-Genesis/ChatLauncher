@@ -28,7 +28,8 @@ public interface Command {
         LAUNCH_APP(0),
         CALL(1),
         WIFI_TOGGLE(2),
-        BLUETOOTH_TOGGLE(3);
+        BLUETOOTH_TOGGLE(3),
+        ALIAS_ADD(4);
 
         @Getter
         private final int id;
@@ -70,7 +71,8 @@ public interface Command {
         public enum Type {
             APPS(0),
             CONTACTS(1),
-            PREDEFINED(2);
+            PREDEFINED(2),
+            ALIAS_ADD(3);
 
             @Getter
             private final int id;
