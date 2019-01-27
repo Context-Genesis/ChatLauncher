@@ -19,8 +19,6 @@ package com.stfalcon.chatkit.messages;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.SparseArray;
@@ -40,6 +38,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Adapter for {@link MessagesList}.
@@ -684,22 +685,6 @@ public class MessagesListAdapter<MESSAGE extends IMessage>
         this.messagesListStyle = style;
     }
 
-    /*
-     * WRAPPER
-     * */
-    public class Wrapper<DATA> {
-        public DATA item;
-        public boolean isSelected;
-
-        Wrapper(DATA item) {
-            this.item = item;
-        }
-    }
-
-    /*
-     * LISTENERS
-     * */
-
     /**
      * Interface definition for a callback to be invoked when next part of messages need to be loaded.
      */
@@ -713,6 +698,10 @@ public class MessagesListAdapter<MESSAGE extends IMessage>
          */
         void onLoadMore(int page, int totalItemsCount);
     }
+
+    /*
+     * LISTENERS
+     * */
 
     /**
      * Interface definition for a callback to be invoked when selected messages count is changed.
@@ -880,12 +869,11 @@ public class MessagesListAdapter<MESSAGE extends IMessage>
     public static abstract class BaseMessageViewHolder<MESSAGE extends IMessage>
             extends MessageHolders.BaseMessageViewHolder<MESSAGE> {
 
-        private boolean isSelected;
-
         /**
          * Callback for implementing images loading in message list
          */
         protected ImageLoader imageLoader;
+        private boolean isSelected;
 
         public BaseMessageViewHolder(View itemView) {
             super(itemView);
@@ -996,6 +984,18 @@ public class MessagesListAdapter<MESSAGE extends IMessage>
 
         public OutcomingMessageViewHolder(View itemView) {
             super(itemView);
+        }
+    }
+
+    /*
+     * WRAPPER
+     * */
+    public class Wrapper<DATA> {
+        public DATA item;
+        public boolean isSelected;
+
+        Wrapper(DATA item) {
+            this.item = item;
         }
     }
 }

@@ -18,9 +18,6 @@ package com.stfalcon.chatkit.dialogs;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +38,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -216,8 +217,9 @@ public class DialogsListAdapter<DIALOG extends IDialog>
 
     /**
      * Move an item
+     *
      * @param fromPosition the actual position of the item
-     * @param toPosition the new position of the item
+     * @param toPosition   the new position of the item
      */
     public void moveItem(int fromPosition, int toPosition) {
         DIALOG dialog = items.remove(fromPosition);
@@ -443,15 +445,15 @@ public class DialogsListAdapter<DIALOG extends IDialog>
     }
 
     /**
-    * @return the position of a dialog in the dialogs list.
-    */
+     * @return the position of a dialog in the dialogs list.
+     */
     public int getDialogPosition(DIALOG dialog) {
         return this.items.indexOf(dialog);
     }
 
     /*
-    * LISTENERS
-    * */
+     * LISTENERS
+     * */
     public interface OnDialogClickListener<DIALOG extends IDialog> {
         void onDialogClick(DIALOG dialog);
     }
@@ -469,8 +471,8 @@ public class DialogsListAdapter<DIALOG extends IDialog>
     }
 
     /*
-    * HOLDERS
-    * */
+     * HOLDERS
+     * */
     public abstract static class BaseDialogViewHolder<DIALOG extends IDialog>
             extends ViewHolder<DIALOG> {
 
