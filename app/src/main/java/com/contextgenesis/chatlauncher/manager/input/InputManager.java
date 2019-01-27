@@ -1,6 +1,7 @@
 package com.contextgenesis.chatlauncher.manager.input;
 
 import com.contextgenesis.chatlauncher.command.executor.AliasAddExecutor;
+import com.contextgenesis.chatlauncher.command.executor.AliasRemoveExecutor;
 import com.contextgenesis.chatlauncher.command.executor.AppLaunchExecutor;
 import com.contextgenesis.chatlauncher.command.executor.BluetoothToggleExecutor;
 import com.contextgenesis.chatlauncher.command.executor.CallExecutor;
@@ -29,6 +30,8 @@ public class InputManager {
     @Inject
     AliasAddExecutor aliasAddExecutor;
     @Inject
+    AliasRemoveExecutor aliasRemoveExecutor;
+    @Inject
     InputParser inputParser;
 
     @Inject
@@ -56,6 +59,10 @@ public class InputManager {
                 case ALIAS_ADD:
                     aliasAddExecutor.setInputMessage(inputMessage);
                     aliasAddExecutor.execute();
+                    break;
+                case ALIAS_REMOVE:
+                    aliasRemoveExecutor.setInputMessage(inputMessage);
+                    aliasRemoveExecutor.execute();
                     break;
                 default:
                     rxBus.post(new OutputMessageEvent("So, here's the thing. I'm sort of dumb right now."));

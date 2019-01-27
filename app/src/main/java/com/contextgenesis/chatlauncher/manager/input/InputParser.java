@@ -50,17 +50,14 @@ public class InputParser {
             return InputMessage.invalidMessage(trimInput, commandType);
         }
 
-        // todo validate number of args; make sure we have at least all those that are required
         String[] args = getArgsFromInput(commandType, trimInput);
 
         // check on number of arguments
-        if (commandType == Command.Type.ALIAS_ADD) {
-            if (args.length < 2) {
-                return InputMessage.invalidMessage(trimInput, commandType);
-            }
-        }
-
         if (args == null) {
+            return InputMessage.invalidMessage(trimInput, commandType);
+        } else if (commandType == Command.Type.ALIAS_ADD && args.length < 2) {
+            return InputMessage.invalidMessage(trimInput, commandType);
+        } else if (commandType == Command.Type.ALIAS_REMOVE && args.length < 1) {
             return InputMessage.invalidMessage(trimInput, commandType);
         }
 
@@ -95,6 +92,14 @@ public class InputParser {
                             if (!aliasCommandValid.isValid()) {
                                 return InputMessage.invalidMessage(trimInput, commandType);
                             }
+                        }
+                        break;
+                    case ALIAS_REMOVE:
+                        // arg[0] : aliasName
+                        String aliasName = args[i];
+                        // if the alias doesnt exist
+                        if (!aliasManager.containsAlias(aliasName.trim())) {
+                            return InputMessage.invalidMessage(trimInput, commandType);
                         }
                         break;
                     case PREDEFINED:
@@ -163,11 +168,11 @@ public class InputParser {
                 previousNotEmptyIndex = i;
             } else if (args[i].isRequired()) {
                 // error scenario when we dont have a mandatory argument
-                // returning an empty array will do, as it will later fail the check when we try to match the argument count
-                return new String[]{};
+                return null;
             }
         }
 
         return argsString;
     }
+
 }
