@@ -17,7 +17,8 @@ public final class CommandList {
             new AppLaunchCommand(),
             new WifiToggleCommand(),
             new BluetoothToggleCommand(),
-            new CallCommand()
+            new CallCommand(),
+            new AliasAddCommand()
     };
 
     public static final List<Command> COMMANDS =

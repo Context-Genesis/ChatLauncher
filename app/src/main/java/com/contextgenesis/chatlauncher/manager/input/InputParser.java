@@ -1,7 +1,9 @@
 package com.contextgenesis.chatlauncher.manager.input;
 
+import com.contextgenesis.chatlauncher.command.Alias;
 import com.contextgenesis.chatlauncher.command.Command;
 import com.contextgenesis.chatlauncher.command.CommandList;
+import com.contextgenesis.chatlauncher.manager.alias.AliasManager;
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
 import com.contextgenesis.chatlauncher.manager.call.ContactsManager;
 
@@ -21,6 +23,9 @@ public class InputParser {
     ContactsManager contactsManager;
 
     @Inject
+    AliasManager aliasManager;
+
+    @Inject
     public InputParser() {
     }
 
@@ -29,7 +34,15 @@ public class InputParser {
      * and flags whether it is valid or not.
      */
     public InputMessage parse(String input) {
+
+        // check if the input command is an alias
+        if (aliasManager.containsAlias(input)) {
+            Alias alias = aliasManager.getAlias(input);
+            // changing to input to the input associated with the alias
+            input = alias.getCommand().trim();
+        }
         String trimInput = StringUtils.trim(input);
+
         Command.Type commandType = getCommandTypeFromInput(trimInput);
 
         // validate command enum
@@ -56,6 +69,26 @@ public class InputParser {
                     case CONTACTS:
                         if (!contactsManager.isContactNameValid(args[i]) || StringUtils.isNumeric(args[i])) {
                             return InputMessage.invalidMessage(trimInput, commandType);
+                        }
+                        break;
+                    case ALIAS_ADD:
+                        if (!args[i].contains("=")) {
+                            return InputMessage.invalidMessage(trimInput, commandType);
+                        }
+                        else{
+                            // arg[0] : aliasName=aliasCommand
+                            String aliasArgs[] = args[i].split("=");
+                            String aliasName = aliasArgs[0];
+                            // if the alias alreadyExists
+                            if(aliasManager.containsAlias(aliasName.trim())){
+                                return InputMessage.invalidMessage(trimInput, commandType);
+                            }
+                            // aliasCommand also needs to be validated
+                            String aliasCommand = aliasArgs[1].trim();
+                            InputMessage aliasCommandValid = parse(aliasCommand);
+                            if(!aliasCommandValid.isValid()){
+                                return InputMessage.invalidMessage(trimInput, commandType);
+                            }
                         }
                         break;
                     case PREDEFINED:
