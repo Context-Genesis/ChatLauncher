@@ -32,7 +32,7 @@
         android:layout_height="2dp"
         android:layout_above="@id/input"
         android:background="@color/divider" />
-    
+
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
         android:layout_width="match_parent"
