@@ -1,7 +1,6 @@
 package com.contextgenesis.chatlauncher.ui;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
