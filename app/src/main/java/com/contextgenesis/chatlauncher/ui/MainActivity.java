@@ -67,7 +67,7 @@ public class MainActivity extends DaggerActivity implements
         messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
-        attachments.setVisibility(View.GONE);
+        // attachments.setVisibility(View.GONE);
     }
 
     @Override
@@ -138,7 +138,18 @@ public class MainActivity extends DaggerActivity implements
 
     @Override
     public void onAddAttachments() {
-        attachments.setVisibility(attachments.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        if (attachments.isVisible()) {
+            attachments.hide(getAttachmentButtonX());
+        } else {
+            attachments.show(getAttachmentButtonX());
+        }
+    }
+
+    /**
+     * Gets the reveal position for the attachment button based on screen width and view width
+     */
+    private int getAttachmentButtonX() {
+        return (int) messageInput.getAttachmentButton().getX();
     }
 
     private ChatUser getChatUser() {
