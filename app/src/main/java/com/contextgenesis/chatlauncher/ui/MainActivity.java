@@ -46,8 +46,8 @@ public class MainActivity extends DaggerActivity implements
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
-    @BindView(R.id.attachments)
-    AttachmentsCardView attachments;
+    @BindView(R.id.shortcuts)
+    ShortcutsCardView shortcuts;
 
     private MessagesListAdapter<ChatMessage> messagesAdapter;
     private ChatUser chatUser;
@@ -66,7 +66,7 @@ public class MainActivity extends DaggerActivity implements
         messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
-        // attachments.setVisibility(View.GONE);
+        // shortcuts.setVisibility(View.GONE);
     }
 
     @Override
@@ -137,17 +137,17 @@ public class MainActivity extends DaggerActivity implements
 
     @Override
     public void onAddAttachments() {
-        if (attachments.isVisible()) {
-            attachments.hide(getAttachmentButtonX());
+        if (shortcuts.isVisible()) {
+            shortcuts.hide(getShortcutButtonX());
         } else {
-            attachments.show(getAttachmentButtonX());
+            shortcuts.show(getShortcutButtonX());
         }
     }
 
     /**
      * Gets the reveal position for the attachment button based on screen width and view width
      */
-    private int getAttachmentButtonX() {
+    private int getShortcutButtonX() {
         return (int) messageInput.getAttachmentButton().getX();
     }
 

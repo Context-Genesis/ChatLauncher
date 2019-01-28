@@ -3,7 +3,7 @@ package com.contextgenesis.chatlauncher.dagger;
 import android.app.Application;
 
 import com.contextgenesis.chatlauncher.RootApplication;
-import com.contextgenesis.chatlauncher.ui.AttachmentsCardView;
+import com.contextgenesis.chatlauncher.ui.ShortcutsCardView;
 
 import javax.inject.Singleton;
 
@@ -32,7 +32,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 
 public interface AppComponent extends AndroidInjector<RootApplication> {
 
-    void inject(AttachmentsCardView attachmentsCardView);
+    void inject(ShortcutsCardView shortcutsCardView);
 
     // Gives us syntactic sugar. we can then do DaggerAppComponent.builder().application(this).build().inject(this);
     // never having to instantiate any modules or say which module we are passing the application to.

@@ -11,7 +11,7 @@ import android.view.ViewAnimationUtils;
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.RootApplication;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
-import com.contextgenesis.chatlauncher.repository.AttachmentsRepository;
+import com.contextgenesis.chatlauncher.repository.ShortcutsRepository;
 import com.contextgenesis.chatlauncher.rx.RxBus;
 
 import javax.inject.Inject;
@@ -22,12 +22,12 @@ import androidx.cardview.widget.CardView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AttachmentsCardView extends CardView implements View.OnClickListener {
+public class ShortcutsCardView extends CardView implements View.OnClickListener {
 
     @Inject
     RxBus rxBus;
     @Inject
-    AttachmentsRepository repository;
+    ShortcutsRepository repository;
 
     @BindView(R.id.option_1)
     ImageTextView option1;
@@ -45,18 +45,18 @@ public class AttachmentsCardView extends CardView implements View.OnClickListene
     private int previousHideX;
     private ImageTextView[] options = null;
 
-    public AttachmentsCardView(@NonNull Context context) {
+    public ShortcutsCardView(@NonNull Context context) {
         super(context);
         initView();
     }
 
-    public AttachmentsCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ShortcutsCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
     private void initView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.attachments_cardview, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.shortcuts_cardview, this, true);
         ButterKnife.bind(this, view);
         ((RootApplication) getContext().getApplicationContext()).getAppComponent().inject(this);
         invalidateOptions();
