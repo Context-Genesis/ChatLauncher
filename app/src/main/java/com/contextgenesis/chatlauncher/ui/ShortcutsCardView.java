@@ -2,6 +2,7 @@ package com.contextgenesis.chatlauncher.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewAnimationUtils;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.RootApplication;
+import com.contextgenesis.chatlauncher.events.InputMessageEvent;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.repository.ShortcutsRepository;
 import com.contextgenesis.chatlauncher.rx.RxBus;
@@ -82,14 +84,16 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
         }
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onClick(View v) {
         for (int id = 1; id < 7; id++) {
             if (getOption(id).getId() == v.getId()) {
                 if (repository.isOptionSet(id)) {
-                    // rxBus.post(new InputMessageEvent(repository.getOption(id).getCommand()));
+                    rxBus.post(new InputMessageEvent(repository.getOption(id).getCommand(), false));
                 } else {
-                    rxBus.post(new OutputMessageEvent("Enter the command you'd like to set"));
+                    rxBus.post(new OutputMessageEvent("To create a shortcut, write the command you'd like to launch"));
+                    rxBus.post(new InputMessageEvent(String.format("shortcut add %d ", id), true));
                     hide();
                 }
             }
