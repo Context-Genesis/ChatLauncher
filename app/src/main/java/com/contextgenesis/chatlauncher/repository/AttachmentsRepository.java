@@ -28,7 +28,8 @@ public class AttachmentsRepository {
     }
 
     public boolean isOptionSet(int key) {
-        return Hawk.contains(toKey(key));
+        String id = toKey(key);
+        return Hawk.contains(id);
     }
 
     public Attachment getOption(int key) {

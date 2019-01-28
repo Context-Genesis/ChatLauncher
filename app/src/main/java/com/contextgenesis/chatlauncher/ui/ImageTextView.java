@@ -21,16 +21,19 @@ import com.contextgenesis.chatlauncher.R;
 import androidx.annotation.Dimension;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import lombok.Getter;
 
 /**
  * Created by rish on 5/17/2016.
  */
 public class ImageTextView extends LinearLayout {
 
+    @Getter
     @BindView(R.id.image_view)
-    public ImageView imageView;
+    ImageView imageView;
+    @Getter
     @BindView(R.id.title)
-    public TextView title;
+    TextView title;
 
     public ImageTextView(Context context) {
         super(context);

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.contextgenesis.chatlauncher.dagger.AppComponent;
 import com.contextgenesis.chatlauncher.dagger.DaggerAppComponent;
 import com.orhanobut.hawk.Hawk;
+import com.orhanobut.hawk.NoEncryption;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +22,9 @@ public class RootApplication extends DaggerApplication {
     public void onCreate() {
         super.onCreate();
 
-        Hawk.init(getApplicationContext());
+        Hawk.init(getApplicationContext())
+                .setEncryption(new NoEncryption())
+                .build();
         setupLogging();
     }
 
