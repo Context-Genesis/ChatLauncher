@@ -3,4 +3,21 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="chat_background">#FFF</color>
+    <color name="chat_background_bottom">#F2F5F5</color>
+    <color name="input_background">#FFF</color>
+
+    <color name="outgoing_background_color">#F0F3F4</color>
+    <color name="outgoing_text_color">#303030</color>
+    <color name="outgoing_link_color">#3366BB</color>
+    <color name="outgoing_date_color">#AAA</color>
+
+    <color name="incoming_background_color">#FFF</color>
+    <color name="incoming_text_color">#303030</color>
+    <color name="incoming_link_color">#3366BB</color>
+    <color name="incoming_date_color">#AAA</color>
+
+    <color name="divider">#F1F1F1</color>
+
 </resources>
