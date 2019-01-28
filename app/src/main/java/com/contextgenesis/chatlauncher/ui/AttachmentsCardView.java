@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class AttachmentsCardView extends CardView {
     public AttachmentsCardView(@NonNull Context context) {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="image_text_view">
+        <attr name="image_src" format="reference" />
+        <attr name="text_title" format="string" />
+        <attr name="image_height" format="dimension" />
+        <attr name="image_width" format="dimension" />
+        <attr name="text_title_size" format="dimension" />
+        <attr name="text_title_bold" format="boolean" />
+    </declare-styleable>
+</resources>
