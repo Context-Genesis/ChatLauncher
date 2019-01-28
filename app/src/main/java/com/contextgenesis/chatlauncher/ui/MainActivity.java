@@ -1,6 +1,7 @@
 package com.contextgenesis.chatlauncher.ui;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
@@ -46,6 +47,9 @@ public class MainActivity extends DaggerActivity implements
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
+    @BindView(R.id.attachments)
+    AttachmentsCardView attachments;
+
     private MessagesListAdapter<ChatMessage> messagesAdapter;
     private ChatUser chatUser;
     private ChatUser phone;
@@ -63,6 +67,7 @@ public class MainActivity extends DaggerActivity implements
         messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
+        attachments.setVisibility(View.GONE);
     }
 
     @Override
@@ -133,7 +138,7 @@ public class MainActivity extends DaggerActivity implements
 
     @Override
     public void onAddAttachments() {
-
+        attachments.setVisibility(attachments.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
     private ChatUser getChatUser() {
