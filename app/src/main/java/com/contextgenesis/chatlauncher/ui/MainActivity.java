@@ -3,6 +3,7 @@ package com.contextgenesis.chatlauncher.ui;
 import android.os.Bundle;
 
 import com.contextgenesis.chatlauncher.R;
+import com.contextgenesis.chatlauncher.events.InputMessageEvent;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.events.PermissionsEvent;
 import com.contextgenesis.chatlauncher.manager.input.InputManager;
@@ -74,6 +75,7 @@ public class MainActivity extends DaggerActivity implements
         super.onStart();
         disposable.add(registerPermissionsEvent());
         disposable.add(registerOutputMessageEvent());
+        disposable.add(registerInputMessageEvent());
     }
 
     @Override
@@ -101,6 +103,22 @@ public class MainActivity extends DaggerActivity implements
                 .subscribe(event -> {
                     messagesAdapter.addToStart(new ChatMessage("android", getPhone(),
                             event.getMessage()), true);
+                });
+    }
+
+    private Disposable registerInputMessageEvent() {
+        return rxBus.register(InputMessageEvent.class)
+                .observeOn(schedulerProvider.androidThread())
+                .subscribeOn(schedulerProvider.androidThread())
+                .subscribe(event -> {
+                    if (event.isNeedsMoreInput()) {
+                        messageInput.getInputEditText().setText(event.getMessage());
+                        messageInput.getInputEditText().requestFocus();
+                        messageInput.getInputEditText().setSelection(messageInput.getInputEditText().length());
+                    } else {
+                        messagesAdapter.addToStart(new ChatMessage("rish", getChatUser(),
+                                event.getMessage()), true);
+                    }
                 });
     }
 

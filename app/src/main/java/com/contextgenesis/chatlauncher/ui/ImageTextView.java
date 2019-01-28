@@ -53,8 +53,10 @@ public class ImageTextView extends LinearLayout {
         @Dimension float width = params.getDimension(R.styleable.image_text_view_image_width, 48);
         @Dimension float height = params.getDimension(R.styleable.image_text_view_image_height, 48);
 
-        if (drawable != null) imageView.setImageDrawable(drawable);
-        imageView.setVisibility(drawable != null ? VISIBLE : GONE);
+        if (drawable != null) {
+            imageView.setImageDrawable(drawable);
+        }
+        imageView.setVisibility(drawable == null ? GONE : VISIBLE);
         imageView.getLayoutParams().width = (int) width;
         imageView.getLayoutParams().height = (int) height;
 
