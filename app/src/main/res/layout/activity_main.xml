@@ -33,6 +33,15 @@
         android:layout_above="@id/input"
         android:background="@color/divider" />
 
+    <com.contextgenesis.chatlauncher.ui.AttachmentsCardView
+        android:id="@+id/attachments"
+        android:layout_width="match_parent"
+        android:layout_height="296dp"
+        android:layout_above="@id/input"
+        android:layout_margin="8dp">
+
+    </com.contextgenesis.chatlauncher.ui.AttachmentsCardView>
+
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
         android:layout_width="match_parent"
