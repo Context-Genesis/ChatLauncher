@@ -32,7 +32,7 @@ import timber.log.Timber;
 
 public class MainActivity extends DaggerActivity implements
         MessagesListAdapter.OnLoadMoreListener,
-        MessageInput.InputListener {
+        MessageInput.InputListener, MessageInput.AttachmentsListener {
 
     private static final int PERMISSION_REQUEST_CODE = 10;
     private final CompositeDisposable disposable = new CompositeDisposable();
@@ -60,6 +60,7 @@ public class MainActivity extends DaggerActivity implements
         messagesAdapter = new MessagesListAdapter<>("chatUser", null);
         messagesAdapter.setLoadMoreListener(this);
         messagesList.setAdapter(messagesAdapter);
+        messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
     }
@@ -128,6 +129,11 @@ public class MainActivity extends DaggerActivity implements
                 .subscribeOn(schedulerProvider.runOnBackground())
                 .subscribe(__ -> inputManager.executeInput(userInputMessage.getText()));
         return true;
+    }
+
+    @Override
+    public void onAddAttachments() {
+
     }
 
     private ChatUser getChatUser() {
