@@ -10,6 +10,11 @@ import android.view.ViewAnimationUtils;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.RootApplication;
+import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
+import com.contextgenesis.chatlauncher.repository.AttachmentsRepository;
+import com.contextgenesis.chatlauncher.rx.RxBus;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +22,12 @@ import androidx.cardview.widget.CardView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AttachmentsCardView extends CardView {
+public class AttachmentsCardView extends CardView implements View.OnClickListener {
+
+    @Inject
+    RxBus rxBus;
+    @Inject
+    AttachmentsRepository repository;
 
     @BindView(R.id.option_1)
     ImageTextView option1;
@@ -31,6 +41,9 @@ public class AttachmentsCardView extends CardView {
     ImageTextView option5;
     @BindView(R.id.option_6)
     ImageTextView option6;
+
+    private int previousHideX;
+    private ImageTextView[] options = null;
 
     public AttachmentsCardView(@NonNull Context context) {
         super(context);
@@ -46,14 +59,41 @@ public class AttachmentsCardView extends CardView {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.attachments_cardview, this, true);
         ButterKnife.bind(this, view);
         ((RootApplication) getContext().getApplicationContext()).getAppComponent().inject(this);
-        initOptions();
+        invalidateOptions();
+        setClickListeners();
+    }
+
+    private void setClickListeners() {
+        for (int id = 1; id < 7; id++) {
+            getOption(id).setOnClickListener(this);
+        }
     }
 
     /**
      * Set the individual icons if they haven't already been set
      */
-    private void initOptions() {
+    private void invalidateOptions() {
+        for (int id = 1; id < 7; id++) {
+            if (repository.isOptionSet(id)) {
+                getOption(id).getTitle().setText(repository.getOption(id).getNickName());
+            } else {
+                getOption(id).getTitle().setText("Click to Set");
+            }
+        }
+    }
 
+    @Override
+    public void onClick(View v) {
+        for (int id = 1; id < 7; id++) {
+            if (getOption(id).getId() == v.getId()) {
+                if (repository.isOptionSet(id)) {
+                    // rxBus.post(new InputMessageEvent(repository.getOption(id).getCommand()));
+                } else {
+                    rxBus.post(new OutputMessageEvent("Enter the command you'd like to set"));
+                    hide();
+                }
+            }
+        }
     }
 
     public boolean isVisible() {
@@ -79,7 +119,12 @@ public class AttachmentsCardView extends CardView {
         }
     }
 
+    private void hide() {
+        hide(previousHideX);
+    }
+
     public void hide(int xRevealPosition) {
+        previousHideX = xRevealPosition;
         int centerX = xRevealPosition;
         int centerY = getTop();
 
@@ -100,5 +145,25 @@ public class AttachmentsCardView extends CardView {
         } else {
             setVisibility(GONE);
         }
+    }
+
+    /**
+     * @param id between [1 and 6].
+     */
+    private ImageTextView getOption(int id) {
+        if (id <= 0 || id >= 7) {
+            throw new RuntimeException("Ahem. Coder. Galti kar raha hai bc. But we should convert this whole thing to a recyclerview really. But meh.");
+        }
+        if (options == null) {
+            options = new ImageTextView[]{
+                    option1,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6
+            };
+        }
+        return options[id - 1];
     }
 }
