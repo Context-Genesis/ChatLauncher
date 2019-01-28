@@ -12,10 +12,10 @@ import javax.inject.Inject;
  * This allows us to later change the underlying implementation of the database if we'd so like.
  * For example, say we have to shift from Hawk to Room, we can do so.
  */
-public class AttachmentsRepository {
+public class ShortcutsRepository {
 
     @Inject
-    public AttachmentsRepository() {
+    public ShortcutsRepository() {
     }
 
     @SuppressLint("DefaultLocale")
