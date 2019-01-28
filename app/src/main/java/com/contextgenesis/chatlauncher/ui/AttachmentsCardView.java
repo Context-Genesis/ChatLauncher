@@ -14,9 +14,24 @@ import com.contextgenesis.chatlauncher.RootApplication;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AttachmentsCardView extends CardView {
+
+    @BindView(R.id.option_1)
+    ImageTextView option1;
+    @BindView(R.id.option_2)
+    ImageTextView option2;
+    @BindView(R.id.option_3)
+    ImageTextView option3;
+    @BindView(R.id.option_4)
+    ImageTextView option4;
+    @BindView(R.id.option_5)
+    ImageTextView option5;
+    @BindView(R.id.option_6)
+    ImageTextView option6;
+
     public AttachmentsCardView(@NonNull Context context) {
         super(context);
         initView();
@@ -31,6 +46,14 @@ public class AttachmentsCardView extends CardView {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.attachments_cardview, this, true);
         ButterKnife.bind(this, view);
         ((RootApplication) getContext().getApplicationContext()).getAppComponent().inject(this);
+        initOptions();
+    }
+
+    /**
+     * Set the individual icons if they haven't already been set
+     */
+    private void initOptions() {
+
     }
 
     public boolean isVisible() {

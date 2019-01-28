@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.contextgenesis.chatlauncher.dagger.AppComponent;
 import com.contextgenesis.chatlauncher.dagger.DaggerAppComponent;
+import com.orhanobut.hawk.Hawk;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ public class RootApplication extends DaggerApplication {
     public void onCreate() {
         super.onCreate();
 
+        Hawk.init(getApplicationContext());
         setupLogging();
     }
 

@@ -102,6 +102,9 @@ dependencies {
     // Better "Subjects" for Rx
     implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
 
+    // Hawk for Preferences
+    implementation 'com.orhanobut:hawk:2.0.1'
+
     // tests
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
