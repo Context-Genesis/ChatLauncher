@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -15,25 +16,34 @@
         <TableRow android:layout_marginTop="24dp">
 
             <com.contextgenesis.chatlauncher.ui.ImageTextView
+                android:id="@+id/option_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 app:image_height="64dp"
                 app:image_src="@drawable/ic_circled_1"
                 app:image_width="64dp"
                 app:text_title="Option 1"
-                app:text_title_size="@dimen/chat_text_size_normal" />
+                app:text_title_size="@dimen/chat_text_size_normal"
+                tools:targetApi="m" />
 
             <com.contextgenesis.chatlauncher.ui.ImageTextView
+                android:id="@+id/option_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 app:image_height="64dp"
                 app:image_src="@drawable/ic_circled_2"
@@ -42,11 +52,15 @@
                 app:text_title_size="@dimen/chat_text_size_normal" />
 
             <com.contextgenesis.chatlauncher.ui.ImageTextView
+                android:id="@+id/option_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 app:image_height="64dp"
                 app:image_src="@drawable/ic_circled_3"
@@ -61,11 +75,15 @@
             android:layout_marginBottom="24dp">
 
             <com.contextgenesis.chatlauncher.ui.ImageTextView
+                android:id="@+id/option_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 app:image_height="64dp"
                 app:image_src="@drawable/ic_circled_4"
@@ -74,12 +92,16 @@
                 app:text_title_size="@dimen/chat_text_size_normal" />
 
             <com.contextgenesis.chatlauncher.ui.ImageTextView
+                android:id="@+id/option_5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 app:image_height="64dp"
                 app:image_src="@drawable/ic_circled_5"
@@ -88,11 +110,15 @@
                 app:text_title_size="@dimen/chat_text_size_normal" />
 
             <com.contextgenesis.chatlauncher.ui.ImageTextView
+                android:id="@+id/option_6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 app:image_height="64dp"
                 app:image_src="@drawable/ic_circled_6"
