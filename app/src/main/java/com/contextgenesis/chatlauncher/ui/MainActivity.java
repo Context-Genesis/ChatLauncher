@@ -116,8 +116,8 @@ public class MainActivity extends DaggerActivity implements
                         messageInput.getInputEditText().requestFocus();
                         messageInput.getInputEditText().setSelection(messageInput.getInputEditText().length());
                     } else {
-                        messagesAdapter.addToStart(new ChatMessage("rish", getChatUser(),
-                                event.getMessage()), true);
+                        messageInput.getInputEditText().setText(event.getMessage());
+                        messageInput.getButton().performClick();
                     }
                 });
     }
