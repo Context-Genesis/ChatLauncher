@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import androidx.annotation.Nullable;
+
 @Singleton
 public class AliasManager {
 
@@ -46,6 +48,7 @@ public class AliasManager {
         return aliasSet.contains(new Alias(alias, ""));
     }
 
+    @Nullable
     public Alias getAlias(String aliasName) {
         for (Alias alias : aliasSet) {
             if (alias.getAliasName().equals(aliasName)) {

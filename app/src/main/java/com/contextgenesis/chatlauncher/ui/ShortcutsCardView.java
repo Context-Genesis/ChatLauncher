@@ -13,6 +13,7 @@ import android.view.ViewAnimationUtils;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.RootApplication;
+import com.contextgenesis.chatlauncher.command.Alias;
 import com.contextgenesis.chatlauncher.events.InputMessageEvent;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.manager.alias.AliasManager;
@@ -30,7 +31,8 @@ import androidx.cardview.widget.CardView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ShortcutsCardView extends CardView implements View.OnClickListener {
+public class ShortcutsCardView extends CardView implements View.OnClickListener,
+        View.OnLongClickListener {
 
     @Inject
     RxBus rxBus;
@@ -82,6 +84,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     private void setClickListeners() {
         for (int id = 1; id < 7; id++) {
             getOption(id).setOnClickListener(this);
+            getOption(id).setOnLongClickListener(this);
         }
     }
 
@@ -94,12 +97,8 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
      */
     private void invalidateOptions() {
         for (int id = 1; id < 7; id++) {
-            if (aliasManager.containsAlias(getShortcutName(id))) {
-                getOption(id).getTitle().setText(getTitleForOption(id));
-                getOption(id).getImageView().setImageDrawable(getDrawableForOption(id));
-            } else {
-                getOption(id).getTitle().setText("Click to Set");
-            }
+            getOption(id).getTitle().setText(getTitleForOption(id));
+            getOption(id).getImageView().setImageDrawable(getDrawableForOption(id));
         }
     }
 
@@ -118,6 +117,20 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        for (int id = 1; id < 7; id++) {
+            if (getOption(id).getId() == v.getId()) {
+                if (aliasManager.containsAlias(getShortcutName(id))) {
+                    rxBus.post(new InputMessageEvent(String.format("unset shortcut-%d", id), false));
+                    hide();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isVisible() {
@@ -173,21 +186,27 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     }
 
     private String getTitleForOption(int id) {
-        String command = aliasManager.getAlias(getShortcutName(id)).getCommand();
-        InputMessage validCommand = inputParser.parse(command);
+        Alias alias = aliasManager.getAlias(getShortcutName(id));
+        if (alias == null) {
+            return "Click to set";
+        }
+        InputMessage validCommand = inputParser.parse(alias.getCommand());
         switch (validCommand.getCommandType()) {
             case LAUNCH_APP:
                 return appManager.getAppInfoFromName(validCommand.getArgs()[0]).getLabel();
             case CALL:
                 return StringUtils.getNthString(validCommand.getArgs()[0].trim(), 0);
             default:
-                return command;
+                return alias.getCommand();
         }
     }
 
     private Drawable getDrawableForOption(int id) {
-        String command = aliasManager.getAlias(getShortcutName(id)).getCommand();
-        InputMessage validCommand = inputParser.parse(command);
+        Alias alias = aliasManager.getAlias(getShortcutName(id));
+        if (alias == null) {
+            return getDefaultDrawable(id);
+        }
+        InputMessage validCommand = inputParser.parse(alias.getCommand());
         switch (validCommand.getCommandType()) {
             case LAUNCH_APP:
                 try {
