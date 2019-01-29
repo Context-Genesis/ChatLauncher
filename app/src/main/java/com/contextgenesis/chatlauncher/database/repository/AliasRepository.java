@@ -41,6 +41,10 @@ public class AliasRepository {
         return Single.fromCallable(() -> aliasDao.getAllAlias()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * todo remove the postOutput call from here; this shouldn't be the job of the Repository; it is
+     * that of the callee of this function, to post it if it so desires.
+     */
     void postOutput(String output) {
         rxBus.post(new OutputMessageEvent(output));
     }
