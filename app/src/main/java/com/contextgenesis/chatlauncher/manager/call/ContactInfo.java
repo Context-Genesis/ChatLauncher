@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class ContactInfo {
 
+    private final long id;
     private final String contactName;
     private final String phoneNumber;
 
