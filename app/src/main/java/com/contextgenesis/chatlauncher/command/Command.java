@@ -73,8 +73,9 @@ public interface Command {
             APPS(0),
             CONTACTS(1),
             PREDEFINED(2),
-            ALIAS_ADD(3),
-            ALIAS_REMOVE(4);
+            NO_SUGGEST(3),
+            ALIAS(4),
+            COMMAND(5);
 
             @Getter
             private final int id;
