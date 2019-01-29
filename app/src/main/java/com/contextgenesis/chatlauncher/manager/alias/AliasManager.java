@@ -13,9 +13,11 @@ import javax.inject.Singleton;
 @Singleton
 public class AliasManager {
 
+    /**
+     * todo remove this Set<Alias>. There is no additional benefit it is providing us.
+     */
     private final Set<Alias> aliasSet;
-
-    AliasRepository aliasRepository;
+    private final AliasRepository aliasRepository;
 
     @Inject
     public AliasManager(AliasRepository aliasRepository) {
@@ -28,18 +30,16 @@ public class AliasManager {
         });
     }
 
-    public String addAlias(String alias, String command) {
+    public void addAlias(String alias, String command) {
         Alias newAlias = new Alias(alias, command);
         aliasRepository.insert(alias, command);
         aliasSet.add(newAlias);
-        return "Alias add successful";
     }
 
-    public String removeAlias(String aliasName) {
+    public void removeAlias(String aliasName) {
         Alias rmAlias = getAlias(aliasName);
         aliasRepository.delete(aliasName);
         aliasSet.remove(rmAlias);
-        return "Alias remove successful";
     }
 
     public boolean containsAlias(String alias) {

@@ -13,6 +13,10 @@ public class AliasAddExecutor extends CommandExecutor {
     public AliasAddExecutor() {
     }
 
+    /**
+     * todo: make the aliasManager return whether the add call was successful and then return
+     * the result via postOutput from here.
+     */
     @Override
     public void execute() {
         String args[] = (String[]) inputMessage.getArgs();
