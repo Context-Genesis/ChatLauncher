@@ -1,9 +1,5 @@
 package com.contextgenesis.chatlauncher.database.repository;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
-import com.contextgenesis.chatlauncher.database.AliasDatabase;
 import com.contextgenesis.chatlauncher.database.dao.AliasDao;
 import com.contextgenesis.chatlauncher.database.entity.AliasEntity;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
@@ -14,7 +10,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import androidx.room.Room;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -22,18 +17,13 @@ import io.reactivex.schedulers.Schedulers;
 @Singleton
 public class AliasRepository {
 
-    // alias database object
-    private AliasDatabase aliasDatabase;
-
-    private AliasDao aliasDao;
-
     @Inject
     RxBus rxBus;
+    @Inject
+    AliasDao aliasDao;
 
     @Inject
-    public AliasRepository(Context context) {
-        aliasDatabase = Room.databaseBuilder(context, AliasDatabase.class, "aliasDatabase").build();
-        aliasDao = aliasDatabase.aliasDao();
+    public AliasRepository() {
     }
 
     public void insert(String aliasName, String command) {

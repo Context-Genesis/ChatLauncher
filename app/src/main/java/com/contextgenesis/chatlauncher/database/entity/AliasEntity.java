@@ -10,18 +10,18 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "alias")
 public class AliasEntity implements Serializable {
 
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "name")
+    private final String aliasName;
+
+    @ColumnInfo(name = "command")
+    private final String command;
+
     public AliasEntity(@NonNull String aliasName, String command) {
         this.aliasName = aliasName;
         this.command = command;
     }
-
-    @PrimaryKey
-    @NonNull
-    @ColumnInfo(name = "name")
-    private String aliasName;
-
-    @ColumnInfo(name = "command")
-    private String command;
 
     @NonNull
     public String getAliasName() {
