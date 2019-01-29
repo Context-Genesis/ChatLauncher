@@ -14,7 +14,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
-import timber.log.Timber;
 
 public class ContactsManager {
 
@@ -66,7 +65,6 @@ public class ContactsManager {
 
     @SuppressWarnings({"PMD.AvoidDeeplyNestedIfStmts", "PMD.ConfusingTernary"})
     private List<ContactInfo> getContactsFromCursor() {
-        long start = System.currentTimeMillis();
         List<ContactInfo> contacts = new ArrayList<>();
 
         ContentResolver resolver = context.getContentResolver();
@@ -76,21 +74,18 @@ public class ContactsManager {
                 final int contactIdIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
                 final int displayNameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 final int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                final int emailIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA);
                 long contactId;
-                String displayName, address, contactNumber;
+                String displayName, contactNumber;
                 while (cursor.moveToNext()) {
                     contactId = cursor.getLong(contactIdIndex);
                     displayName = cursor.getString(displayNameIndex);
-                    address = cursor.getString(emailIndex);
                     contactNumber = cursor.getString(numberIndex);
-                    contacts.add(new ContactInfo(displayName, contactNumber));
+                    contacts.add(new ContactInfo(contactId, displayName, contactNumber));
                 }
             } finally {
                 cursor.close();
             }
         }
-        Timber.d("Total Time: " + (System.currentTimeMillis() - start));
         return contacts;
     }
 
