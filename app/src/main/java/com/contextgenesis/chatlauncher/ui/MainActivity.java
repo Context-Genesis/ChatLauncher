@@ -84,6 +84,15 @@ public class MainActivity extends DaggerActivity implements
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (shortcuts.isVisible()) {
+            shortcuts.hide(getShortcutButtonX());
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private Disposable registerPermissionsEvent() {
         return rxBus.register(PermissionsEvent.class)
                 .observeOn(schedulerProvider.androidThread())

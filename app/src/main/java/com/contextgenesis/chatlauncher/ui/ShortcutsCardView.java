@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -25,9 +27,11 @@ import com.contextgenesis.chatlauncher.utils.StringUtils;
 
 import javax.inject.Inject;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -204,7 +208,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
     private Drawable getDrawableForOption(int id) {
         Alias alias = aliasManager.getAlias(getShortcutName(id));
         if (alias == null) {
-            return getDefaultDrawable(id);
+            return getDefaultDrawable(id, R.color.shortcut_unselected_option_tint);
         }
         InputMessage validCommand = inputParser.parse(alias.getCommand());
         switch (validCommand.getCommandType()) {
@@ -213,12 +217,18 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
                     return packageManager.getApplicationIcon(appManager.getAppInfoFromName(validCommand.getArgs()[0]).getComponentName().getPackageName());
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
-                    return getDefaultDrawable(id);
+                    return getDefaultDrawable(id, R.color.shortcut_unselected_option_tint);
                 }
             case CALL:
                 return context.getResources().getDrawable(R.drawable.phone);
         }
-        return getDefaultDrawable(id);
+        return getDefaultDrawable(id, R.color.shortcut_unselected_option_tint);
+    }
+
+    private Drawable getDefaultDrawable(int id, @ColorRes int tint) {
+        Drawable drawable = getDefaultDrawable(id);
+        drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(context, tint), PorterDuff.Mode.SRC_IN));
+        return drawable;
     }
 
     private Drawable getDefaultDrawable(int id) {
