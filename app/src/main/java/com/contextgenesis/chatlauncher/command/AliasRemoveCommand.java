@@ -15,7 +15,7 @@ public class AliasRemoveCommand implements Command {
     @Override
     public ArgInfo[] getArgs() {
         return new ArgInfo[]{
-                new ArgInfo(true, "", ArgInfo.Type.ALIAS_REMOVE)
+                new ArgInfo(true, "", ArgInfo.Type.ALIAS)
         };
     }
 

@@ -15,8 +15,8 @@ public class AliasAddCommand implements Command {
     @Override
     public ArgInfo[] getArgs() {
         return new ArgInfo[]{
-                new ArgInfo(true, "", ArgInfo.Type.ALIAS_ADD),
-                new ArgInfo(true, "=", ArgInfo.Type.ALIAS_ADD)
+                new ArgInfo(true, "", ArgInfo.Type.NO_SUGGEST),
+                new ArgInfo(true, "=", ArgInfo.Type.COMMAND)
         };
     }
 

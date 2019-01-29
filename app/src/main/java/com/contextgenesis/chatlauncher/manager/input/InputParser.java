@@ -55,9 +55,9 @@ public class InputParser {
         // check on number of arguments
         if (args == null) {
             return InputMessage.invalidMessage(trimInput, commandType);
-        } else if (commandType == Command.Type.ALIAS_ADD && args.length < 2) {
+        } else if (commandType == Command.Type.ALIAS_ADD && args.length != 2) {
             return InputMessage.invalidMessage(trimInput, commandType);
-        } else if (commandType == Command.Type.ALIAS_REMOVE && args.length < 1) {
+        } else if (commandType == Command.Type.ALIAS_REMOVE && args.length != 1) {
             return InputMessage.invalidMessage(trimInput, commandType);
         }
 
@@ -76,29 +76,18 @@ public class InputParser {
                             return InputMessage.invalidMessage(trimInput, commandType);
                         }
                         break;
-                    case ALIAS_ADD:
-                        if (i == 0) {
-                            // arg[0] : aliasName
-                            String aliasName = args[i];
-                            // if the alias alreadyExists
-                            if (aliasManager.containsAlias(aliasName.trim())) {
-                                return InputMessage.invalidMessage(trimInput, commandType);
-                            }
-                        } else {
-                            // arg[1] : command
-                            // aliasCommand also needs to be validated
-                            String aliasCommand = args[i].trim();
-                            InputMessage aliasCommandValid = parse(aliasCommand);
-                            if (!aliasCommandValid.isValid()) {
-                                return InputMessage.invalidMessage(trimInput, commandType);
-                            }
-                        }
-                        break;
-                    case ALIAS_REMOVE:
-                        // arg[0] : aliasName
+                    case ALIAS:
                         String aliasName = args[i];
                         // if the alias doesnt exist
                         if (!aliasManager.containsAlias(aliasName.trim())) {
+                            return InputMessage.invalidMessage(trimInput, commandType);
+                        }
+                        break;
+                    case COMMAND:
+                        // command needs to be validated
+                        String command = args[i].trim();
+                        InputMessage commandInputMessage = parse(command);
+                        if (!commandInputMessage.isValid()) {
                             return InputMessage.invalidMessage(trimInput, commandType);
                         }
                         break;
@@ -111,6 +100,15 @@ public class InputParser {
                         }
                         if (!oneValidFound) {
                             return InputMessage.invalidMessage(trimInput, commandType);
+                        }
+                        break;
+                    case NO_SUGGEST:
+                        // for commandType alias_add, aliasName should always be unique
+                        if (commandType == Command.Type.ALIAS_ADD && i == 0) {
+                            aliasName = args[i];
+                            if (aliasManager.containsAlias(aliasName.trim())) {
+                                return InputMessage.invalidMessage(trimInput, commandType);
+                            }
                         }
                         break;
                     default:

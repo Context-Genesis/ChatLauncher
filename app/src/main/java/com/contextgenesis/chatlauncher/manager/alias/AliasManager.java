@@ -1,6 +1,8 @@
 package com.contextgenesis.chatlauncher.manager.alias;
 
 import com.contextgenesis.chatlauncher.command.Alias;
+import com.contextgenesis.chatlauncher.database.entity.AliasEntity;
+import com.contextgenesis.chatlauncher.database.repository.AliasRepository;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,25 +15,30 @@ public class AliasManager {
 
     private final Set<Alias> aliasSet;
 
-    // TODO: inject DAO
+    AliasRepository aliasRepository;
 
     @Inject
-    public AliasManager() {
-        // TODO: load from DB, if first time insert into DB after populating with appNames
+    public AliasManager(AliasRepository aliasRepository) {
         aliasSet = new HashSet<>();
+        this.aliasRepository = aliasRepository;
+        aliasRepository.getAllAlias().subscribe(aliasEntities -> {
+            for (AliasEntity aliasEntity : aliasEntities) {
+                aliasSet.add(new Alias(aliasEntity.getAliasName(), aliasEntity.getCommand()));
+            }
+        });
     }
 
     public String addAlias(String alias, String command) {
         Alias newAlias = new Alias(alias, command);
+        aliasRepository.insert(alias, command);
         aliasSet.add(newAlias);
-        // TODO: store it in DB
         return "Alias add successful";
     }
 
-    public String removeAlias(String alias) {
-        Alias rmAlias = new Alias(alias, "");
+    public String removeAlias(String aliasName) {
+        Alias rmAlias = getAlias(aliasName);
+        aliasRepository.delete(aliasName);
         aliasSet.remove(rmAlias);
-        // TODO: db action
         return "Alias remove successful";
     }
 
