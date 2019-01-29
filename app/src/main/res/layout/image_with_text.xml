@@ -11,8 +11,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="4dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_circled_1"
-        android:tint="@color/attachment_option_tint" />
+        android:src="@drawable/ic_circled_1" />
 
     <TextView
         android:id="@+id/title"

@@ -196,6 +196,8 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
                     e.printStackTrace();
                     return getDefaultDrawable(id);
                 }
+            case CALL:
+                return context.getResources().getDrawable(R.drawable.phone);
         }
         return getDefaultDrawable(id);
     }
