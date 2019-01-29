@@ -12,6 +12,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 
 import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.RootApplication;
@@ -35,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressWarnings("PMD.GodClass")
 public class ShortcutsCardView extends CardView implements View.OnClickListener,
         View.OnLongClickListener {
 
@@ -126,12 +130,10 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         for (int id = 1; id < 7; id++) {
-            if (getOption(id).getId() == v.getId()) {
-                if (aliasManager.containsAlias(getShortcutName(id))) {
-                    rxBus.post(new InputMessageEvent(String.format("unset shortcut-%d", id), false));
-                    hide();
-                    return true;
-                }
+            if (getOption(id).getId() == v.getId() && aliasManager.containsAlias(getShortcutName(id))) {
+                rxBus.post(new InputMessageEvent(String.format("unset shortcut-%d", id), false));
+                hide();
+                return true;
             }
         }
         return false;
@@ -157,6 +159,14 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
 
         setVisibility(VISIBLE);
         if (anim != null) {
+            for (int id = 1; id < 7; id++) {
+                ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f, 1.f, 0.5f, 1.f,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1.0f);
+                scaleAnimation.setInterpolator(new DecelerateInterpolator());
+                scaleAnimation.setDuration(300);
+                scaleAnimation.setStartOffset(100 - ((id - 1) % 3) * 30);
+                getOption(id).startAnimation(scaleAnimation);
+            }
             anim.start();
         }
     }
@@ -221,8 +231,9 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
                 }
             case CALL:
                 return context.getResources().getDrawable(R.drawable.phone);
+            default:
+                return getDefaultDrawable(id, R.color.shortcut_unselected_option_tint);
         }
-        return getDefaultDrawable(id, R.color.shortcut_unselected_option_tint);
     }
 
     private Drawable getDefaultDrawable(int id, @ColorRes int tint) {
