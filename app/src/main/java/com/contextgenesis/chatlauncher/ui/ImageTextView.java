@@ -75,7 +75,8 @@ public class ImageTextView extends LinearLayout {
     private void initialize(Context context) {
         View view = inflate(context, R.layout.image_with_text, this);
         ButterKnife.bind(this);
-        imageView = (ImageView) view.findViewById(R.id.image_view);
-        title = (TextView) view.findViewById(R.id.title);
+        imageView = view.findViewById(R.id.image_view);
+        title = view.findViewById(R.id.title);
+        title.setSelected(true);
     }
 }
