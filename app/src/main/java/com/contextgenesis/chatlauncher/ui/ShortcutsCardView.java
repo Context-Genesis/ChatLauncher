@@ -13,7 +13,7 @@ import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.RootApplication;
 import com.contextgenesis.chatlauncher.events.InputMessageEvent;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
-import com.contextgenesis.chatlauncher.repository.ShortcutsRepository;
+import com.contextgenesis.chatlauncher.manager.alias.AliasManager;
 import com.contextgenesis.chatlauncher.rx.RxBus;
 
 import javax.inject.Inject;
@@ -29,7 +29,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     @Inject
     RxBus rxBus;
     @Inject
-    ShortcutsRepository repository;
+    AliasManager aliasManager;
 
     @BindView(R.id.option_1)
     ImageTextView option1;
@@ -71,13 +71,17 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
         }
     }
 
+    private String getShortcutName(int id) {
+        return String.format("shortcut-%d", id);
+    }
+
     /**
      * Set the individual icons if they haven't already been set
      */
     private void invalidateOptions() {
         for (int id = 1; id < 7; id++) {
-            if (repository.isOptionSet(id)) {
-                getOption(id).getTitle().setText(repository.getOption(id).getNickName());
+            if (aliasManager.containsAlias(getShortcutName(id))) {
+                getOption(id).getTitle().setText(aliasManager.getAlias(getShortcutName(id)).getCommand());
             } else {
                 getOption(id).getTitle().setText("Click to Set");
             }
@@ -89,11 +93,12 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     public void onClick(View v) {
         for (int id = 1; id < 7; id++) {
             if (getOption(id).getId() == v.getId()) {
-                if (repository.isOptionSet(id)) {
-                    rxBus.post(new InputMessageEvent(repository.getOption(id).getCommand(), false));
+                if (aliasManager.containsAlias(getShortcutName(id))) {
+                    rxBus.post(new InputMessageEvent(aliasManager.getAlias(getShortcutName(id)).getCommand(), false));
+                    hide();
                 } else {
                     rxBus.post(new OutputMessageEvent("To create a shortcut, write the command you'd like to launch"));
-                    rxBus.post(new InputMessageEvent(String.format("shortcut add %d ", id), true));
+                    rxBus.post(new InputMessageEvent(String.format("set shortcut-%d=", id), true));
                     hide();
                 }
             }
@@ -105,6 +110,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     }
 
     public void show(int xRevealPosition) {
+        invalidateOptions();
         int centerX = xRevealPosition;
         int centerY = getTop();
 
