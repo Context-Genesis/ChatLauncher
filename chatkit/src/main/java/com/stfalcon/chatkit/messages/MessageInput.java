@@ -23,7 +23,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -242,6 +244,16 @@ public class MessageInput extends RelativeLayout
         messageInput.addTextChangedListener(this);
         messageInput.setText("");
         messageInput.setOnFocusChangeListener(this);
+        messageInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    messageSendButton.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void setCursor(Drawable drawable) {

@@ -8,7 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:inputType="textAutoCorrect|textAutoComplete|textMultiLine|textCapSentences" />
+        android:layout_toLeftOf="@id/attachmentButtonSpace"
+        android:imeActionLabel="@string/send"
+        android:imeOptions="actionSend"
+        android:inputType="textAutoCorrect|textAutoComplete|textShortMessage|textCapSentences" />
 
     <Space
         android:id="@id/attachmentButtonSpace"
