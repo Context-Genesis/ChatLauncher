@@ -8,7 +8,7 @@
     <color name="chat_background_bottom">#F2F5F5</color>
     <color name="input_background">#FFF</color>
     <color name="attachment_background">#FFF</color>
-    <color name="attachment_option_tint">#AAA</color>
+    <color name="shortcut_unselected_option_tint">#AAA</color>
 
     <color name="outgoing_background_color">#F0F3F4</color>
     <color name="outgoing_text_color">#303030</color>
