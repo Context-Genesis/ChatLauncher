@@ -67,7 +67,7 @@ public class MainActivity extends DaggerActivity implements
         messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
-        // shortcuts.setVisibility(View.GONE);
+        shortcuts.post(() -> shortcuts.hide(getShortcutButtonX()));
     }
 
     @Override

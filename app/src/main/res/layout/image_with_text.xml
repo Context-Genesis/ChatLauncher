@@ -16,11 +16,17 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="72dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/image_view"
         android:layout_centerHorizontal="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:textColor="@color/attachment_option_tint"
         android:textSize="18sp"
         tools:text="Option 1" />

@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,11 @@ import com.contextgenesis.chatlauncher.RootApplication;
 import com.contextgenesis.chatlauncher.events.InputMessageEvent;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.manager.alias.AliasManager;
+import com.contextgenesis.chatlauncher.manager.app.AppManager;
+import com.contextgenesis.chatlauncher.manager.input.InputMessage;
+import com.contextgenesis.chatlauncher.manager.input.InputParser;
 import com.contextgenesis.chatlauncher.rx.RxBus;
+import com.contextgenesis.chatlauncher.utils.StringUtils;
 
 import javax.inject.Inject;
 
@@ -29,7 +35,15 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     @Inject
     RxBus rxBus;
     @Inject
+    InputParser inputParser;
+    @Inject
     AliasManager aliasManager;
+    @Inject
+    AppManager appManager;
+    @Inject
+    PackageManager packageManager;
+    @Inject
+    Context context;
 
     @BindView(R.id.option_1)
     ImageTextView option1;
@@ -81,7 +95,8 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     private void invalidateOptions() {
         for (int id = 1; id < 7; id++) {
             if (aliasManager.containsAlias(getShortcutName(id))) {
-                getOption(id).getTitle().setText(aliasManager.getAlias(getShortcutName(id)).getCommand());
+                getOption(id).getTitle().setText(getTitleForOption(id));
+                getOption(id).getImageView().setImageDrawable(getDrawableForOption(id));
             } else {
                 getOption(id).getTitle().setText("Click to Set");
             }
@@ -154,6 +169,53 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
             anim.start();
         } else {
             setVisibility(GONE);
+        }
+    }
+
+    private String getTitleForOption(int id) {
+        String command = aliasManager.getAlias(getShortcutName(id)).getCommand();
+        InputMessage validCommand = inputParser.parse(command);
+        switch (validCommand.getCommandType()) {
+            case LAUNCH_APP:
+                return appManager.getAppInfoFromName(validCommand.getArgs()[0]).getLabel();
+            case CALL:
+                return StringUtils.getNthString(validCommand.getArgs()[0].trim(), 0);
+            default:
+                return command;
+        }
+    }
+
+    private Drawable getDrawableForOption(int id) {
+        String command = aliasManager.getAlias(getShortcutName(id)).getCommand();
+        InputMessage validCommand = inputParser.parse(command);
+        switch (validCommand.getCommandType()) {
+            case LAUNCH_APP:
+                try {
+                    return packageManager.getApplicationIcon(appManager.getAppInfoFromName(validCommand.getArgs()[0]).getComponentName().getPackageName());
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                    return getDefaultDrawable(id);
+                }
+        }
+        return getDefaultDrawable(id);
+    }
+
+    private Drawable getDefaultDrawable(int id) {
+        switch (id) {
+            case 1:
+                return context.getResources().getDrawable(R.drawable.ic_circled_1);
+            case 2:
+                return context.getResources().getDrawable(R.drawable.ic_circled_2);
+            case 3:
+                return context.getResources().getDrawable(R.drawable.ic_circled_3);
+            case 4:
+                return context.getResources().getDrawable(R.drawable.ic_circled_4);
+            case 5:
+                return context.getResources().getDrawable(R.drawable.ic_circled_5);
+            case 6:
+                return context.getResources().getDrawable(R.drawable.ic_circled_6);
+            default:
+                return context.getResources().getDrawable(R.drawable.ic_circled_1);
         }
     }
 
