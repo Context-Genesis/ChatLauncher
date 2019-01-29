@@ -112,7 +112,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     public void show(int xRevealPosition) {
         invalidateOptions();
         int centerX = xRevealPosition;
-        int centerY = getTop();
+        int centerY = getHeight();
 
         int startRadius = 0;
         int endRadius = (int) Math.hypot(getWidth(), getHeight());
@@ -136,7 +136,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener 
     public void hide(int xRevealPosition) {
         previousHideX = xRevealPosition;
         int centerX = xRevealPosition;
-        int centerY = getTop();
+        int centerY = getHeight();
 
         int startRadius = (int) Math.hypot(getWidth(), getHeight());
         int endRadius = 0;
