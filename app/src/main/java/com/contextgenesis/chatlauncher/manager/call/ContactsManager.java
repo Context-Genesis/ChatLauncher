@@ -14,12 +14,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
+import timber.log.Timber;
 
 public class ContactsManager {
 
+    private static final String[] PROJECTION = new String[]{
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+    };
     @Inject
     Context context;
-
     private List<ContactInfo> contacts;
 
     @Inject
@@ -61,36 +66,31 @@ public class ContactsManager {
 
     @SuppressWarnings({"PMD.AvoidDeeplyNestedIfStmts", "PMD.ConfusingTernary"})
     private List<ContactInfo> getContactsFromCursor() {
+        long start = System.currentTimeMillis();
         List<ContactInfo> contacts = new ArrayList<>();
 
-        ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-        if ((cursor != null ? cursor.getCount() : 0) > 0) {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCursor = contentResolver.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCursor != null && pCursor.moveToNext()) {
-                        String phoneNo = pCursor.getString(pCursor.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        contacts.add(new ContactInfo(name, phoneNo));
-                    }
-                    if (pCursor != null) {
-                        pCursor.close();
-                    }
+        ContentResolver resolver = context.getContentResolver();
+        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PROJECTION, null, null, null);
+        if (cursor != null) {
+            try {
+                final int contactIdIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+                final int displayNameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                final int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                final int emailIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA);
+                long contactId;
+                String displayName, address, contactNumber;
+                while (cursor.moveToNext()) {
+                    contactId = cursor.getLong(contactIdIndex);
+                    displayName = cursor.getString(displayNameIndex);
+                    address = cursor.getString(emailIndex);
+                    contactNumber = cursor.getString(numberIndex);
+                    contacts.add(new ContactInfo(displayName, contactNumber));
                 }
+            } finally {
+                cursor.close();
             }
         }
-        if (cursor != null) {
-            cursor.close();
-        }
+        Timber.d("Total Time: " + (System.currentTimeMillis() - start));
         return contacts;
     }
 
