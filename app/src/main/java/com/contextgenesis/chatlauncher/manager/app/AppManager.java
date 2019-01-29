@@ -35,7 +35,7 @@ public class AppManager {
         return null;
     }
 
-    private List<AppInfo> getAppList() {
+    public List<AppInfo> getAppList() {
         if (appList == null) {
             appList = new ArrayList<>();
             Intent i = new Intent(Intent.ACTION_MAIN);
