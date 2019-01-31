@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import lombok.val;
-import timber.log.Timber;
 
 public final class FluidContentResizer {
 
@@ -26,7 +25,6 @@ public final class FluidContentResizer {
     }
 
     public void animateHeight(ActivityViewHolder viewHolder, KeyboardVisibilityChanged event) {
-        Timber.d("animate(): " + event.toString());
         ViewGroup contentView = viewHolder.getContentView();
         setHeight(contentView, event.getContentHeightBeforeResize());
 
@@ -37,7 +35,7 @@ public final class FluidContentResizer {
         // for some reason it skips the first animation and I cannot figure out why.
         heightAnimator = ObjectAnimator.ofInt(event.getContentHeightBeforeResize(), event.getContentHeight());
         heightAnimator.setInterpolator(new FastOutSlowInInterpolator());
-        heightAnimator.setDuration(3000);
+        heightAnimator.setDuration(400);
         heightAnimator.addUpdateListener(animation -> setHeight(contentView, (Integer) animation.getAnimatedValue()));
         heightAnimator.start();
     }

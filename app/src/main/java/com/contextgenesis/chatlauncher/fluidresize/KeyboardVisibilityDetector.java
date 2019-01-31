@@ -7,6 +7,9 @@ import lombok.val;
 
 public final class KeyboardVisibilityDetector {
 
+    private KeyboardVisibilityDetector() {
+    }
+
     public static void listen(ActivityViewHolder viewHolder, KeyboardVisibilityChangedListener listener) {
         val detector = new Detector(viewHolder, listener);
         viewHolder.getNonResizableLayout().getViewTreeObserver().addOnPreDrawListener(detector);
@@ -21,11 +24,9 @@ public final class KeyboardVisibilityDetector {
 
         @Override
         public boolean onPreDraw() {
-            val detected = detect();
-
             // The layout flickers for a moment, usually on the first
             // animation. Intercepting this pre-draw seems to solve the problem.
-            return !detected;
+            return !detect();
         }
 
         private boolean detect() {

@@ -13,9 +13,9 @@ import static android.view.Window.ID_ANDROID_CONTENT;
 @Getter
 public class ActivityViewHolder {
 
-    private ViewGroup nonResizableLayout;
-    private ViewGroup resizableLayout;
-    private ViewGroup contentView;
+    private final ViewGroup nonResizableLayout;
+    private final ViewGroup resizableLayout;
+    private final ViewGroup contentView;
 
     /**
      * The Activity View tree usually looks like this:
