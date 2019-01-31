@@ -53,5 +53,4 @@
         android:elevation="8dp"
         app:inputHint="@string/hint_enter_a_message"
         app:showAttachmentButton="true" />
-
 </RelativeLayout>

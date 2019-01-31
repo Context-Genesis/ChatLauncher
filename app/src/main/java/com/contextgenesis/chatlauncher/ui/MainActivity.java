@@ -6,6 +6,7 @@ import com.contextgenesis.chatlauncher.R;
 import com.contextgenesis.chatlauncher.events.InputMessageEvent;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.events.PermissionsEvent;
+import com.contextgenesis.chatlauncher.fluidresize.FluidContentResizer;
 import com.contextgenesis.chatlauncher.manager.input.InputManager;
 import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
 import com.contextgenesis.chatlauncher.models.chat.ChatUser;
@@ -25,13 +26,13 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.android.DaggerActivity;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-public class MainActivity extends DaggerActivity implements
+public class MainActivity extends DaggerAppCompatActivity implements
         MessagesListAdapter.OnLoadMoreListener,
         MessageInput.InputListener, MessageInput.AttachmentsListener {
 
@@ -60,6 +61,7 @@ public class MainActivity extends DaggerActivity implements
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        new FluidContentResizer(this);
 
         messagesAdapter = new MessagesListAdapter<>("chatUser", null);
         messagesAdapter.setLoadMoreListener(this);
