@@ -7,6 +7,7 @@ import com.contextgenesis.chatlauncher.command.executor.BluetoothToggleExecutor;
 import com.contextgenesis.chatlauncher.command.executor.CallExecutor;
 import com.contextgenesis.chatlauncher.command.executor.WifiToggleExecutor;
 import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
+import com.contextgenesis.chatlauncher.manager.suggest.SuggestionManager;
 import com.contextgenesis.chatlauncher.rx.RxBus;
 
 import javax.inject.Inject;
@@ -33,6 +34,8 @@ public class InputManager {
     AliasRemoveExecutor aliasRemoveExecutor;
     @Inject
     InputParser inputParser;
+    @Inject
+    SuggestionManager suggestionManager;
 
     @Inject
     public InputManager() {
@@ -66,11 +69,21 @@ public class InputManager {
                     break;
                 default:
                     rxBus.post(new OutputMessageEvent("So, here's the thing. I'm sort of dumb right now."));
-                    break;
+                    return;
             }
         } else {
             rxBus.post(new OutputMessageEvent("Bad input message. I'm supposed to have info on why this is dumb, but my makers were lazy."));
+            return;
         }
+
+        // we need to improve suggestions only for valid input, only valid input messages will reach here
+        if (inputParser.isAlias(input.trim())) {
+            suggestionManager.improveSuggestions(inputParser.getAliasName(input));
+        } else {
+            suggestionManager.improveSuggestions(inputMessage);
+        }
+
+        suggestionManager.printAllSuggestions();
     }
 
 }

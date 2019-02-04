@@ -21,7 +21,6 @@ public class InputParser {
     AppManager appManager;
     @Inject
     ContactsManager contactsManager;
-
     @Inject
     AliasManager aliasManager;
 
@@ -37,7 +36,7 @@ public class InputParser {
         String trimInput = StringUtils.trim(input);
 
         // check if the input command is an alias
-        if (aliasManager.containsAlias(trimInput)) {
+        if (isAlias(trimInput)) {
             Alias alias = aliasManager.getAlias(trimInput);
             // changing to input to the input associated with the alias
             trimInput = alias.getCommand().trim();
@@ -171,6 +170,14 @@ public class InputParser {
         }
 
         return argsString;
+    }
+
+    public boolean isAlias(String input) {
+        return aliasManager.containsAlias(input);
+    }
+
+    public String getAliasName(String input) {
+        return aliasManager.getAlias(input).getAliasName();
     }
 
 }
