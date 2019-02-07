@@ -8,6 +8,9 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 @Dao
 public interface SuggestDao {
@@ -23,4 +26,11 @@ public interface SuggestDao {
 
     @Query("SELECT * from suggestion")
     List<SuggestEntity> getAllSuggestions();
+
+    @Query("SELECT * from suggestion WHERE argType=:argType AND name Like  '%' || :input || '%' Order By clickCount DESC")
+    List<SuggestEntity> getSuggestions(String input, int argType);
+
+    @Query("SELECT * from suggestion WHERE argType=:argType AND name Like  '%' || :input || '%' AND name IN (:predefinedInputs) Order By name")
+    List<SuggestEntity> getPredefinedInputs(String input, String[] predefinedInputs, int argType);
+
 }

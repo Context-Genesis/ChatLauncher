@@ -8,6 +8,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Singleton
@@ -34,5 +37,13 @@ public class SuggestRepository {
         for (SuggestEntity suggestEntity : suggestions) {
             Timber.i("Command:" + suggestEntity.getCommandName() + ", ArgType:" + suggestEntity.getArgType() + ", ClickCount:" + suggestEntity.getClickCount());
         }
+    }
+
+    public Single<List<SuggestEntity>> getSuggestions(String input, int argType) {
+        return Single.fromCallable(() -> suggestDao.getSuggestions(input, argType)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<SuggestEntity>> getPredefinedInputSuggestions(String input, String[] predefinedInput, int argType) {
+        return Single.fromCallable(() -> suggestDao.getPredefinedInputs(input, predefinedInput, argType)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

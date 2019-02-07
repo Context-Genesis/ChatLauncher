@@ -8,6 +8,8 @@ import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.events.PermissionsEvent;
 import com.contextgenesis.chatlauncher.fluidresize.FluidContentResizer;
 import com.contextgenesis.chatlauncher.manager.input.InputManager;
+import com.contextgenesis.chatlauncher.manager.suggest.SuggestionManager;
+import com.contextgenesis.chatlauncher.manager.suggest.SuggestionTextWatcher;
 import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
 import com.contextgenesis.chatlauncher.models.chat.ChatUser;
 import com.contextgenesis.chatlauncher.rx.RxBus;
@@ -55,6 +57,11 @@ public class MainActivity extends DaggerAppCompatActivity implements
     private ChatUser chatUser;
     private ChatUser phone;
 
+    @Inject
+    SuggestionManager suggestionManager;
+    @Inject
+    SuggestionTextWatcher textWatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +77,13 @@ public class MainActivity extends DaggerAppCompatActivity implements
 
         messageInput.setInputListener(this);
         shortcuts.post(() -> shortcuts.hide(getShortcutButtonX()));
+        messageInput.getInputEditText().addTextChangedListener(textWatcher);
+
+        Observable
+                .create(emitter -> emitter.onNext(new Object()))
+                .observeOn(schedulerProvider.runOnBackground())
+                .subscribeOn(schedulerProvider.runOnBackground())
+                .subscribe(__ -> suggestionManager.initialize());
     }
 
     @Override

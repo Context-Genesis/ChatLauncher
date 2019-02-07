@@ -4,8 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import com.contextgenesis.chatlauncher.database.AliasDatabase;
+import com.contextgenesis.chatlauncher.database.LauncherDatabase;
 import com.contextgenesis.chatlauncher.database.dao.AliasDao;
+import com.contextgenesis.chatlauncher.database.dao.SuggestDao;
 import com.contextgenesis.chatlauncher.rx.RxBus;
 import com.contextgenesis.chatlauncher.rx.RxEventBus;
 import com.contextgenesis.chatlauncher.rx.scheduler.BaseSchedulerProvider;
@@ -50,12 +51,17 @@ public class AppModule {
 
     @Provides
     @Singleton
-    AliasDatabase aliasDatabase(Context context) {
-        return Room.databaseBuilder(context, AliasDatabase.class, "aliasDatabase").build();
+    LauncherDatabase launcherDatabase(Context context) {
+        return Room.databaseBuilder(context, LauncherDatabase.class, "launcherDatabase").build();
     }
 
     @Provides
-    AliasDao aliasDao(AliasDatabase aliasDatabase) {
-        return aliasDatabase.aliasDao();
+    AliasDao aliasDao(LauncherDatabase launcherDatabase) {
+        return launcherDatabase.aliasDao();
+    }
+
+    @Provides
+    SuggestDao suggestDao(LauncherDatabase launcherDatabase) {
+        return launcherDatabase.suggestDao();
     }
 }
