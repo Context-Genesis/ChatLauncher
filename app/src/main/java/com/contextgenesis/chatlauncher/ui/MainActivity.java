@@ -76,7 +76,6 @@ public class MainActivity extends DaggerAppCompatActivity implements
         messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
-        shortcuts.post(() -> shortcuts.hide(getShortcutButtonX()));
         messageInput.getInputEditText().addTextChangedListener(textWatcher);
 
         Observable
