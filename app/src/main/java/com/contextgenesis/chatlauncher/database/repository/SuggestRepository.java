@@ -39,8 +39,8 @@ public class SuggestRepository {
         }
     }
 
-    public Single<List<SuggestEntity>> getSuggestions(String input, int argType) {
-        return Single.fromCallable(() -> suggestDao.getSuggestions(input, argType)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    public Single<List<SuggestEntity>> getSuggestions(String input, List<Integer> argTypes) {
+        return Single.fromCallable(() -> suggestDao.getSuggestions(input, argTypes)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<SuggestEntity>> getPredefinedInputSuggestions(String input, String[] predefinedInput, int argType) {

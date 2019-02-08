@@ -12,6 +12,7 @@ import com.contextgenesis.chatlauncher.manager.input.InputMessage;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Single;
+import timber.log.Timber;
 
 @Singleton
 public class SuggestionManager {
@@ -39,7 +41,7 @@ public class SuggestionManager {
     /*
           For first time populating the db, though this will increment each time the user opens the app
           initialize the db with SuggestionEntities for apps, contacts, commands and PredefinedInputs
-          TODO: can be restricted to only once by storing isInitialized variable in map
+          TODO: should be restricted to only once by storing isInitialized variable in map
     */
     public void initialize() {
         List<AppInfo> apps = appManager.getAppList();
@@ -76,7 +78,7 @@ public class SuggestionManager {
     }
 
     /*
-        improve suggestions for Commands, AppNames and Contacts
+        improve suggestions for Commands, AppNames, Contacts and
         not improving suggestions for Predefined inputs as it makes sense to show inputs like "on" and "off" in the same order each time
      */
     public void improveSuggestions(InputMessage inputMessage) {
@@ -90,9 +92,14 @@ public class SuggestionManager {
             }
             if (appManager.isAppNameValid(args[i])) {
                 suggestRepository.upsert(new SuggestEntity(args[i], Command.ArgInfo.Type.APPS.getId()));
-            } else if (contactsManager.isContactNameValid(args[i])) {
+            } else if (contactsManager.isContactsPermissionsGranted() && contactsManager.isContactNameValid(args[i])) {
                 suggestRepository.upsert(new SuggestEntity(args[i], Command.ArgInfo.Type.CONTACTS.getId()));
             }
+        }
+
+        // set p=launch perplexy, include "p" in suggestions for alias
+        if (inputMessage.getCommandType().equals(Command.Type.ALIAS_ADD)) {
+            improveSuggestions(args[0]);
         }
     }
 
@@ -101,12 +108,12 @@ public class SuggestionManager {
         suggestRepository.printSuggestions();
     }
 
+    /*
+        Step1: check whether a command exists or not
+        Step2: if command not present return the list of probable commands
+        Step3: else check the commands argument type and suggest accordingly
+    */
     public Single<List<SuggestEntity>> requestSuggestions(String input) {
-        /*
-                Step1: check whether a command exists or not
-                Step2: if command not present return the list of probable commands
-                Step3: else check the commands argument type and suggest accordingly
-         */
         List<Command> commands = CommandList.COMMANDS;
         Command inputCommand = null;
         for (Command command : commands) {
@@ -115,24 +122,42 @@ public class SuggestionManager {
             }
         }
 
+        List<Integer> argTypes = new ArrayList<>();
         if (inputCommand == null) {
-            return suggestRepository.getSuggestions(input, Command.ArgInfo.Type.COMMAND.getId());
+            argTypes.add(Command.ArgInfo.Type.COMMAND.getId());
+            argTypes.add(Command.ArgInfo.Type.ALIAS.getId());
+            // TODO: later when we get rid of launch, add APP here
+            return suggestRepository.getSuggestions(input, argTypes);
+
         } else {
             Command.ArgInfo[] argsInfo = inputCommand.getArgs();
-            String inputArgsOnly = StringUtils.trim(input.substring(
-                    input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length()));
+
+            String inputArgsOnly = StringUtils.stripStart(input.substring(
+                    input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length()), " ");
+
+            Timber.i(input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length() + "");
 
             for (int i = 0; i < argsInfo.length; i++) {
                 if (inputArgsOnly.contains(argsInfo[i].getIdentifier())) {
                     // remove the previous arguments from the search
-                    inputArgsOnly = StringUtils.trim(inputArgsOnly.substring(inputArgsOnly.toLowerCase().indexOf(argsInfo[i].getIdentifier()) + argsInfo[i].getIdentifier().length()));
+                    inputArgsOnly = inputArgsOnly.substring(inputArgsOnly.toLowerCase().indexOf(argsInfo[i].getIdentifier()) + argsInfo[i].getIdentifier().length());
                     if ((i + 1) != argsInfo.length && inputArgsOnly.contains(argsInfo[i + 1].getIdentifier())) {
                         continue;
                     }
                     if (argsInfo[i].hasPredefinedInputs()) {
-                        return suggestRepository.getPredefinedInputSuggestions(inputArgsOnly, argsInfo[i].getPredefinedInputs(), argsInfo[i].getType().getId());
+                        return suggestRepository.getPredefinedInputSuggestions(inputArgsOnly, argsInfo[i].getPredefinedInputs(), Command.ArgInfo.Type.PREDEFINED.getId());
                     } else {
-                        return suggestRepository.getSuggestions(inputArgsOnly, argsInfo[i].getType().getId());
+                        // special case: eg set wa = launch , we need suggestions for appNames
+                        if (inputCommand.getType().equals(Command.Type.ALIAS_ADD) && argsInfo[i].getIdentifier().equals("=")) {
+                            return requestSuggestions(inputArgsOnly);
+                        }
+                        argTypes.add(argsInfo[i].getType().getId());
+                        return suggestRepository.getSuggestions(inputArgsOnly, argTypes);
+                    }
+                } else {
+                    // if the identifier for a first mandatory argument is missing, return nothing
+                    if (argsInfo[i].isRequired()) {
+                        break;
                     }
                 }
             }
@@ -141,7 +166,6 @@ public class SuggestionManager {
         // no suggestions
         return null;
     }
-
 
     // TODO: Capture events: app install/uninstall{should also delete the alias},
     // TODO: contact add/delete/edit{should also get changed in alias say "call Dhruv"}

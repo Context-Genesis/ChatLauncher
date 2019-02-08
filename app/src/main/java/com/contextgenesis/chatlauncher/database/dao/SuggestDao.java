@@ -27,8 +27,8 @@ public interface SuggestDao {
     @Query("SELECT * from suggestion")
     List<SuggestEntity> getAllSuggestions();
 
-    @Query("SELECT * from suggestion WHERE argType=:argType AND name Like  '%' || :input || '%' Order By clickCount DESC")
-    List<SuggestEntity> getSuggestions(String input, int argType);
+    @Query("SELECT * from suggestion WHERE argType IN (:argTypes) AND name Like  '%' || :input || '%' Order By clickCount DESC")
+    List<SuggestEntity> getSuggestions(String input, List<Integer> argTypes);
 
     @Query("SELECT * from suggestion WHERE argType=:argType AND name Like  '%' || :input || '%' AND name IN (:predefinedInputs) Order By name")
     List<SuggestEntity> getPredefinedInputs(String input, String[] predefinedInputs, int argType);
