@@ -9,6 +9,7 @@ import com.contextgenesis.chatlauncher.manager.app.AppManager;
 import com.contextgenesis.chatlauncher.manager.call.ContactInfo;
 import com.contextgenesis.chatlauncher.manager.call.ContactsManager;
 import com.contextgenesis.chatlauncher.manager.input.InputMessage;
+import com.contextgenesis.chatlauncher.ui.SuggestionAdapter;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,6 +31,9 @@ public class SuggestionManager {
     private final AppManager appManager;
     private final ContactsManager contactsManager;
     private final SuggestRepository suggestRepository;
+
+    @Inject
+    SuggestionAdapter suggestionAdapter;
 
     @Inject
     public SuggestionManager(SuggestRepository suggestRepository, AppManager appManager, ContactsManager contactsManager) {
@@ -100,7 +104,10 @@ public class SuggestionManager {
         // set p=launch perplexy, include "p" in suggestions for alias
         if (inputMessage.getCommandType().equals(Command.Type.ALIAS_ADD)) {
             improveSuggestions(args[0]);
+            // this is needed to get this new alias show in suggestions immediately
+            startSuggestionThread("");
         }
+
     }
 
 
@@ -170,4 +177,17 @@ public class SuggestionManager {
     // TODO: Capture events: app install/uninstall{should also delete the alias},
     // TODO: contact add/delete/edit{should also get changed in alias say "call Dhruv"}
 
+
+    public void startSuggestionThread(String input) {
+        requestSuggestions(input.toLowerCase()).subscribe(suggestEntities -> {
+            Timber.i("Suggestions");
+            List<SuggestEntity> suggestions = suggestionAdapter.getSuggestions();
+            suggestions.removeAll(suggestions);
+            for (SuggestEntity suggestion : suggestEntities) {
+                Timber.i(suggestion.getCommandName() + " , " + suggestion.getClickCount());
+                suggestions.add(suggestion);
+            }
+            suggestionAdapter.notifyDataSetChanged();
+        });
+    }
 }

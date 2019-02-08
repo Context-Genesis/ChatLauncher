@@ -83,15 +83,15 @@ public class MainActivity extends DaggerAppCompatActivity implements
         messageInput.setInputListener(this);
         messageInput.getInputEditText().addTextChangedListener(textWatcher);
 
+        RecyclerView rvSuggestions = (RecyclerView) findViewById(R.id.rvSuggestions);
+        rvSuggestions.setAdapter(suggestionAdapter);
+        rvSuggestions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         Observable
                 .create(emitter -> emitter.onNext(new Object()))
                 .observeOn(schedulerProvider.runOnBackground())
                 .subscribeOn(schedulerProvider.runOnBackground())
                 .subscribe(__ -> suggestionManager.initialize());
-
-        RecyclerView rvSuggestions = (RecyclerView) findViewById(R.id.rvSuggestions);
-        rvSuggestions.setAdapter(suggestionAdapter);
-        rvSuggestions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     @Override
