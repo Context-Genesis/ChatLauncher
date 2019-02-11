@@ -104,12 +104,24 @@ public class SuggestionManager {
         // set p=launch perplexy, include "p" in suggestions for alias
         if (inputMessage.getCommandType().equals(Command.Type.ALIAS_ADD)) {
             improveSuggestions(args[0]);
-            // this is needed to get this new alias show in suggestions immediately
-            startSuggestionThread("");
         }
+
+        // remove alias from suggestion table as well
+        if (inputMessage.getCommandType().getId() == Command.Type.ALIAS_REMOVE.getId()) {
+            removeSuggestion(args[0]);
+        }
+
+        // this is needed to reflect suggestions immediately
+        startSuggestionThread("");
 
     }
 
+    // TODO: Capture events: app uninstall{should also delete all alias for appName},
+    // TODO: contact delete
+    //remove an entry from suggestion table
+    public void removeSuggestion(String suggestion) {
+        suggestRepository.removeSuggestion(suggestion);
+    }
 
     public void printAllSuggestions() {
         suggestRepository.printSuggestions();
@@ -174,8 +186,11 @@ public class SuggestionManager {
         return null;
     }
 
-    // TODO: Capture events: app install/uninstall{should also delete the alias},
-    // TODO: contact add/delete/edit{should also get changed in alias say "call Dhruv"}
+    // TODO: Capture events: app install
+    // should insert in db
+
+    // TODO: contact add/edit{should also get changed in alias say "call Dhruv"}
+    // updateSuggestionTable()
 
 
     public void startSuggestionThread(String input) {
@@ -190,4 +205,5 @@ public class SuggestionManager {
             suggestionAdapter.notifyDataSetChanged();
         });
     }
+
 }

@@ -33,4 +33,7 @@ public interface SuggestDao {
     @Query("SELECT * from suggestion WHERE argType=:argType AND name Like  '%' || :input || '%' AND name IN (:predefinedInputs) Order By name")
     List<SuggestEntity> getPredefinedInputs(String input, String[] predefinedInputs, int argType);
 
+    @Query("DELETE FROM suggestion WHERE name = :suggestion")
+    void deleteBySuggestionName(String suggestion);
+
 }

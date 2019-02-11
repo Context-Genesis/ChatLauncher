@@ -48,7 +48,6 @@ public class SuggestionAdapter extends
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
@@ -66,13 +65,16 @@ public class SuggestionAdapter extends
 
         holder.suggestionTextBtn.setText(suggestionText);
 
-//        if (suggestion.getArgType() == Command.ArgInfo.Type
-//                .ALIAS.getId()) {
-//            holder.suggestionTextBtn.setTextColor(Color.RED);
-//        } else if (suggestion.getArgType() == Command.ArgInfo.Type
-//                .APPS.getId()) {
-//            holder.suggestionTextBtn.setTextColor(Color.GREEN);
-//        }
+        if (suggestion.getArgType() == Command.ArgInfo.Type
+                .ALIAS.getId()) {
+            holder.suggestionTextBtn.setTextColor(Color.RED);
+        } else if (suggestion.getArgType() == Command.ArgInfo.Type
+                .COMMAND.getId()) {
+            holder.suggestionTextBtn.setTextColor(Color.BLUE);
+        } else {
+            holder.suggestionTextBtn.setTextColor(Color.BLACK);
+        }
+
     }
 
     @Override

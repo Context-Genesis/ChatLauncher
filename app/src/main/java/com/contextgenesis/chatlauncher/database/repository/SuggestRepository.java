@@ -2,6 +2,7 @@ package com.contextgenesis.chatlauncher.database.repository;
 
 import com.contextgenesis.chatlauncher.database.dao.SuggestDao;
 import com.contextgenesis.chatlauncher.database.entity.SuggestEntity;
+import com.contextgenesis.chatlauncher.utils.StringUtils;
 
 import java.util.List;
 
@@ -45,5 +46,9 @@ public class SuggestRepository {
 
     public Single<List<SuggestEntity>> getPredefinedInputSuggestions(String input, String[] predefinedInput, int argType) {
         return Single.fromCallable(() -> suggestDao.getPredefinedInputs(input, predefinedInput, argType)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void removeSuggestion(String suggestion) {
+        suggestDao.deleteBySuggestionName(suggestion);
     }
 }
