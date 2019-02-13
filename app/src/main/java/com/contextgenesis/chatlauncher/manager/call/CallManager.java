@@ -7,9 +7,17 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 
+import com.contextgenesis.chatlauncher.events.PermissionsEvent;
+import com.contextgenesis.chatlauncher.rx.RxBus;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+
+import static com.contextgenesis.chatlauncher.events.PermissionsEvent.Type.REQUEST;
 
 public class CallManager {
 
@@ -17,6 +25,8 @@ public class CallManager {
     Context context;
     @Inject
     ContactsManager contactsManager;
+    @Inject
+    RxBus rxBus;
 
     @Inject
     public CallManager() {
@@ -32,6 +42,7 @@ public class CallManager {
     public boolean call(String numberOrContact) {
         String number = getNumberFromContact(numberOrContact);
         Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         callIntent.setData(Uri.parse("tel:" + number));
         if (isCallPermissionGranted()) {
             context.startActivity(callIntent);
@@ -50,6 +61,19 @@ public class CallManager {
             return input;
         }
         return contactInfo.getPhoneNumber();
+    }
+
+
+    public void fetchCallingPermissions() {
+        // send an event and wait until we receive a granted/denied event
+        PermissionsEvent permissionsEvent = Observable.create((ObservableOnSubscribe<PermissionsEvent>) emitter -> {
+            rxBus.register(PermissionsEvent.class)
+                    .filter(event -> event.getPermissions().equals(Manifest.permission.CALL_PHONE))
+                    .filter(event -> event.getType() != REQUEST)
+                    .subscribe(emitter::onNext);
+            rxBus.post(new PermissionsEvent(Manifest.permission.CALL_PHONE, REQUEST));
+        })
+                .blockingFirst();
     }
 
 }

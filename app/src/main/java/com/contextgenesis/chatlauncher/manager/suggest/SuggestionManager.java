@@ -6,9 +6,11 @@ import com.contextgenesis.chatlauncher.database.entity.SuggestEntity;
 import com.contextgenesis.chatlauncher.database.repository.SuggestRepository;
 import com.contextgenesis.chatlauncher.manager.app.AppInfo;
 import com.contextgenesis.chatlauncher.manager.app.AppManager;
+import com.contextgenesis.chatlauncher.manager.call.CallManager;
 import com.contextgenesis.chatlauncher.manager.call.ContactInfo;
 import com.contextgenesis.chatlauncher.manager.call.ContactsManager;
 import com.contextgenesis.chatlauncher.manager.input.InputMessage;
+import com.contextgenesis.chatlauncher.rx.scheduler.BaseSchedulerProvider;
 import com.contextgenesis.chatlauncher.ui.SuggestionAdapter;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import timber.log.Timber;
 
@@ -30,16 +33,20 @@ public class SuggestionManager {
 
     private final AppManager appManager;
     private final ContactsManager contactsManager;
+    private final CallManager callManager;
     private final SuggestRepository suggestRepository;
 
     @Inject
     SuggestionAdapter suggestionAdapter;
+    @Inject
+    BaseSchedulerProvider schedulerProvider;
 
     @Inject
-    public SuggestionManager(SuggestRepository suggestRepository, AppManager appManager, ContactsManager contactsManager) {
+    public SuggestionManager(SuggestRepository suggestRepository, AppManager appManager, ContactsManager contactsManager, CallManager callManager) {
         this.suggestRepository = suggestRepository;
         this.appManager = appManager;
         this.contactsManager = contactsManager;
+        this.callManager = callManager;
     }
 
     /*
@@ -51,12 +58,6 @@ public class SuggestionManager {
         List<AppInfo> apps = appManager.getAppList();
         for (AppInfo app : apps) {
             suggestRepository.upsert(new SuggestEntity(app.getLabel(), Command.ArgInfo.Type.APPS.getId()));
-        }
-
-        // TODO: take contact permissions before itself else this would return no suggestions for contacts
-        List<ContactInfo> contacts = contactsManager.getContacts();
-        for (ContactInfo contact : contacts) {
-            suggestRepository.upsert(new SuggestEntity(contact.getContactName(), Command.ArgInfo.Type.CONTACTS.getId()));
         }
 
         List<Command> commands = CommandList.COMMANDS;
@@ -71,6 +72,14 @@ public class SuggestionManager {
         }
         for (String predefinedInput : distinctPredefinedInputs) {
             suggestRepository.upsert(new SuggestEntity(predefinedInput, Command.ArgInfo.Type.PREDEFINED.getId()));
+        }
+    }
+
+    public void initializeContacts() {
+        List<ContactInfo> contacts = contactsManager.getContacts();
+        for (ContactInfo contact : contacts) {
+            suggestRepository.upsert(new SuggestEntity(contact.getContactName(), Command.ArgInfo.Type.CONTACTS.getId()));
+            Timber.i("Check:"  +contact.getContactName());
         }
     }
 
@@ -149,37 +158,57 @@ public class SuggestionManager {
             return suggestRepository.getSuggestions(input, argTypes);
 
         } else {
-            Command.ArgInfo[] argsInfo = inputCommand.getArgs();
 
-            String inputArgsOnly = StringUtils.stripStart(input.substring(
-                    input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length()), " ");
+            // fetch call permissions
+            if (inputCommand.getType() == Command.Type.CALL) {
+                Observable
+                        .create(emitter -> emitter.onNext(new Object()))
+                        .observeOn(schedulerProvider.runOnBackground())
+                        .subscribeOn(schedulerProvider.runOnBackground())
 
-            Timber.i(input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length() + "");
+                        .subscribe(__ -> {
+                            if (!callManager.isCallPermissionGranted()) {
+                                callManager.fetchCallingPermissions();
+                            }
+                            if (!contactsManager.isContactsPermissionsGranted()) {
+                                contactsManager.fetchContactsPermissions();
+                                initializeContacts();
+                            }
+                        });
+            }
+        }
 
-            for (int i = 0; i < argsInfo.length; i++) {
-                if (inputArgsOnly.contains(argsInfo[i].getIdentifier())) {
-                    // remove the previous arguments from the search
-                    inputArgsOnly = inputArgsOnly.substring(inputArgsOnly.toLowerCase().indexOf(argsInfo[i].getIdentifier()) + argsInfo[i].getIdentifier().length());
-                    if ((i + 1) != argsInfo.length && inputArgsOnly.contains(argsInfo[i + 1].getIdentifier())) {
-                        continue;
-                    }
-                    if (argsInfo[i].hasPredefinedInputs()) {
-                        return suggestRepository.getPredefinedInputSuggestions(inputArgsOnly, argsInfo[i].getPredefinedInputs(), Command.ArgInfo.Type.PREDEFINED.getId());
-                    } else {
-                        // special case: eg set wa = launch , we need suggestions for appNames
-                        if (inputCommand.getType().equals(Command.Type.ALIAS_ADD) && argsInfo[i].getIdentifier().equals("=")) {
-                            return requestSuggestions(inputArgsOnly);
-                        }
-                        argTypes.add(argsInfo[i].getType().getId());
-                        return suggestRepository.getSuggestions(inputArgsOnly, argTypes);
-                    }
+        Command.ArgInfo[] argsInfo = inputCommand.getArgs();
+
+        String inputArgsOnly = StringUtils.stripStart(input.substring(
+                input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length()), " ");
+
+        Timber.i(input.toLowerCase().indexOf(inputCommand.getName()) + inputCommand.getName().length() + "");
+
+        for (int i = 0; i < argsInfo.length; i++) {
+            if (inputArgsOnly.contains(argsInfo[i].getIdentifier())) {
+                // remove the previous arguments from the search
+                inputArgsOnly = inputArgsOnly.substring(inputArgsOnly.toLowerCase().indexOf(argsInfo[i].getIdentifier()) + argsInfo[i].getIdentifier().length());
+                if ((i + 1) != argsInfo.length && inputArgsOnly.contains(argsInfo[i + 1].getIdentifier())) {
+                    continue;
+                }
+                if (argsInfo[i].hasPredefinedInputs()) {
+                    return suggestRepository.getPredefinedInputSuggestions(inputArgsOnly, argsInfo[i].getPredefinedInputs(), Command.ArgInfo.Type.PREDEFINED.getId());
                 } else {
-                    // if the identifier for a first mandatory argument is missing, return nothing
-                    if (argsInfo[i].isRequired()) {
-                        break;
+                    // special case: eg set wa = launch , we need suggestions for appNames
+                    if (inputCommand.getType().equals(Command.Type.ALIAS_ADD) && argsInfo[i].getIdentifier().equals("=")) {
+                        return requestSuggestions(inputArgsOnly);
                     }
+                    argTypes.add(argsInfo[i].getType().getId());
+                    return suggestRepository.getSuggestions(inputArgsOnly, argTypes);
+                }
+            } else {
+                // if the identifier for a first mandatory argument is missing, return nothing
+                if (argsInfo[i].isRequired()) {
+                    break;
                 }
             }
+
         }
 
         // no suggestions

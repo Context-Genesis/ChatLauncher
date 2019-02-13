@@ -1,18 +1,10 @@
 package com.contextgenesis.chatlauncher.command.executor;
 
-import android.Manifest;
-
-import com.contextgenesis.chatlauncher.events.PermissionsEvent;
 import com.contextgenesis.chatlauncher.manager.call.CallManager;
 import com.contextgenesis.chatlauncher.manager.call.ContactsManager;
-import com.contextgenesis.chatlauncher.rx.RxBus;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-
-import static com.contextgenesis.chatlauncher.events.PermissionsEvent.Type.REQUEST;
 
 public class CallExecutor extends CommandExecutor {
 
@@ -20,8 +12,6 @@ public class CallExecutor extends CommandExecutor {
     CallManager callManager;
     @Inject
     ContactsManager contactsManager;
-    @Inject
-    RxBus rxBus;
 
     @Inject
     public CallExecutor() {
@@ -36,29 +26,10 @@ public class CallExecutor extends CommandExecutor {
         String input = (String) inputMessage.getArgs()[0];
 
         if (!callManager.isCallPermissionGranted()) {
-            // send an event and wait until we receive a granted/denied event
-            PermissionsEvent permissionsEvent = Observable.create((ObservableOnSubscribe<PermissionsEvent>) emitter -> {
-                rxBus.register(PermissionsEvent.class)
-                        .filter(event -> event.getPermissions().equals(Manifest.permission.CALL_PHONE))
-                        .filter(event -> event.getType() != REQUEST)
-                        .subscribe(emitter::onNext);
-                rxBus.post(new PermissionsEvent(Manifest.permission.CALL_PHONE, REQUEST));
-            })
-                    .blockingFirst();
-            postOutput("Permission Status: " + permissionsEvent.getType());
+            callManager.fetchCallingPermissions();
         }
-
         if (!contactsManager.isContactsPermissionsGranted()) {
-            // send an event and wait until we receive a granted/denied event
-            PermissionsEvent permissionsEvent = Observable.create((ObservableOnSubscribe<PermissionsEvent>) emitter -> {
-                rxBus.register(PermissionsEvent.class)
-                        .filter(event -> event.getPermissions().equals(Manifest.permission.READ_CONTACTS))
-                        .filter(event -> event.getType() != REQUEST)
-                        .subscribe(emitter::onNext);
-                rxBus.post(new PermissionsEvent(Manifest.permission.READ_CONTACTS, REQUEST));
-            })
-                    .blockingFirst();
-            postOutput("Permission Status: " + permissionsEvent.getType());
+            contactsManager.fetchContactsPermissions();
         }
 
         if (callManager.call(input)) {

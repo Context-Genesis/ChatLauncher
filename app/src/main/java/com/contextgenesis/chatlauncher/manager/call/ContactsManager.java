@@ -8,12 +8,19 @@ import android.database.Cursor;
 import android.os.Build;
 import android.provider.ContactsContract;
 
+import com.contextgenesis.chatlauncher.events.PermissionsEvent;
+import com.contextgenesis.chatlauncher.rx.RxBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+
+import static com.contextgenesis.chatlauncher.events.PermissionsEvent.Type.REQUEST;
 
 public class ContactsManager {
 
@@ -22,8 +29,12 @@ public class ContactsManager {
             ContactsContract.Contacts.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.NUMBER
     };
+
     @Inject
     Context context;
+    @Inject
+    RxBus rxBus;
+
     private List<ContactInfo> contacts;
 
     @Inject
@@ -101,5 +112,17 @@ public class ContactsManager {
             }
         }
         return null;
+    }
+
+    public void fetchContactsPermissions() {
+        // send an event and wait until we receive a granted/denied event
+        PermissionsEvent permissionsEvent = Observable.create((ObservableOnSubscribe<PermissionsEvent>) emitter -> {
+            rxBus.register(PermissionsEvent.class)
+                    .filter(event -> event.getPermissions().equals(Manifest.permission.READ_CONTACTS))
+                    .filter(event -> event.getType() != REQUEST)
+                    .subscribe(emitter::onNext);
+            rxBus.post(new PermissionsEvent(Manifest.permission.READ_CONTACTS, REQUEST));
+        })
+                .blockingFirst();
     }
 }
