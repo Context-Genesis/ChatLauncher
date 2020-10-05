@@ -69,6 +69,16 @@ public interface Command {
             this.predefinedInputs = predefinedInputs.clone();
         }
 
+        public boolean hasPredefinedInputs() {
+            if (predefinedInputs.length > 0)
+                return true;
+            return false;
+        }
+
+        public String[] getPredefinedInputs() {
+            return predefinedInputs;
+        }
+
         public enum Type {
             APPS(0),
             CONTACTS(1),

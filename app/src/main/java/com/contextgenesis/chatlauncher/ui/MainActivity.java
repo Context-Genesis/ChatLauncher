@@ -8,6 +8,8 @@ import com.contextgenesis.chatlauncher.events.OutputMessageEvent;
 import com.contextgenesis.chatlauncher.events.PermissionsEvent;
 import com.contextgenesis.chatlauncher.fluidresize.FluidContentResizer;
 import com.contextgenesis.chatlauncher.manager.input.InputManager;
+import com.contextgenesis.chatlauncher.manager.suggest.SuggestionManager;
+import com.contextgenesis.chatlauncher.manager.suggest.SuggestionTextWatcher;
 import com.contextgenesis.chatlauncher.models.chat.ChatMessage;
 import com.contextgenesis.chatlauncher.models.chat.ChatUser;
 import com.contextgenesis.chatlauncher.rx.RxBus;
@@ -18,12 +20,15 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
@@ -55,6 +60,13 @@ public class MainActivity extends DaggerAppCompatActivity implements
     private ChatUser chatUser;
     private ChatUser phone;
 
+    @Inject
+    SuggestionManager suggestionManager;
+    @Inject
+    SuggestionTextWatcher textWatcher;
+    @Inject
+    SuggestionAdapter suggestionAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +81,17 @@ public class MainActivity extends DaggerAppCompatActivity implements
         messageInput.setAttachmentsListener(this);
 
         messageInput.setInputListener(this);
-        shortcuts.post(() -> shortcuts.hide(getShortcutButtonX()));
+        messageInput.getInputEditText().addTextChangedListener(textWatcher);
+
+        RecyclerView rvSuggestions = (RecyclerView) findViewById(R.id.rvSuggestions);
+        rvSuggestions.setAdapter(suggestionAdapter);
+        rvSuggestions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+        Observable
+                .create(emitter -> emitter.onNext(new Object()))
+                .observeOn(schedulerProvider.runOnBackground())
+                .subscribeOn(schedulerProvider.runOnBackground())
+                .subscribe(__ -> suggestionManager.initialize());
     }
 
     @Override
@@ -123,11 +145,55 @@ public class MainActivity extends DaggerAppCompatActivity implements
                 .subscribeOn(schedulerProvider.androidThread())
                 .subscribe(event -> {
                     if (event.isNeedsMoreInput()) {
-                        messageInput.getInputEditText().setText(event.getMessage());
+                        if (event.isAppend()) {
+                            String input = messageInput.getInputEditText().getText().toString();
+                            String eventMessage = event.getMessage();
+
+                            int index = input.length();
+                            String trailingCommonInput = "";
+                            for (int i = input.length() - 1; i >= 0; i--) {
+                                trailingCommonInput = input.charAt(i) + trailingCommonInput;
+                                if (eventMessage.toLowerCase().contains(trailingCommonInput.toLowerCase())) {
+                                    index = i;
+                                } else {
+                                    break;
+                                }
+                            }
+                            // have to remove the common trailing input and we want to replace by event message
+                            input = input.substring(0, index).trim();
+                            if (input.length() > 0) {
+                                input += " ";
+                            }
+                            messageInput.getInputEditText().setText(input + event.getMessage() + " ");
+                        } else {
+                            messageInput.getInputEditText().setText(event.getMessage());
+                        }
                         messageInput.getInputEditText().requestFocus();
                         messageInput.getInputEditText().setSelection(messageInput.getInputEditText().length());
                     } else {
-                        messageInput.getInputEditText().setText(event.getMessage());
+                        if (event.isAppend()) {
+                            String input = messageInput.getInputEditText().getText().toString();
+                            String eventMessage = event.getMessage();
+
+                            int index = input.length();
+                            String trailingCommonInput = "";
+                            for (int i = input.length() - 1; i >= 0; i--) {
+                                trailingCommonInput = input.charAt(i) + trailingCommonInput;
+                                if (eventMessage.toLowerCase().contains(trailingCommonInput.toLowerCase())) {
+                                    index = i;
+                                } else {
+                                    break;
+                                }
+                            }
+                            // have to remove the common trailing input and we want to replace by event message
+                            input = input.substring(0, index).trim();
+                            if (input.length() > 0) {
+                                input += " ";
+                            }
+                            messageInput.getInputEditText().setText(input + event.getMessage() + " ");
+                        } else {
+                            messageInput.getInputEditText().setText(event.getMessage());
+                        }
                         messageInput.getButton().performClick();
                     }
                 });

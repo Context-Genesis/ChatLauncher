@@ -116,11 +116,11 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
         for (int id = 1; id < 7; id++) {
             if (getOption(id).getId() == v.getId()) {
                 if (aliasManager.containsAlias(getShortcutName(id))) {
-                    rxBus.post(new InputMessageEvent(aliasManager.getAlias(getShortcutName(id)).getCommand(), false));
+                    rxBus.post(new InputMessageEvent(aliasManager.getAlias(getShortcutName(id)).getCommand(), false, false));
                     hide();
                 } else {
                     rxBus.post(new OutputMessageEvent("To create a shortcut, write the command you'd like to launch"));
-                    rxBus.post(new InputMessageEvent(String.format("set shortcut-%d=", id), true));
+                    rxBus.post(new InputMessageEvent(String.format("set shortcut-%d=", id), true, false));
                     hide();
                 }
             }
@@ -131,7 +131,7 @@ public class ShortcutsCardView extends CardView implements View.OnClickListener,
     public boolean onLongClick(View v) {
         for (int id = 1; id < 7; id++) {
             if (getOption(id).getId() == v.getId() && aliasManager.containsAlias(getShortcutName(id))) {
-                rxBus.post(new InputMessageEvent(String.format("unset shortcut-%d", id), false));
+                rxBus.post(new InputMessageEvent(String.format("unset shortcut-%d", id), false, false));
                 hide();
                 return true;
             }

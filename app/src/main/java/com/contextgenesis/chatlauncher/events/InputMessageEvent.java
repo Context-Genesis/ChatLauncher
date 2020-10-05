@@ -13,4 +13,6 @@ public class InputMessageEvent extends Event {
      */
     private final boolean needsMoreInput;
 
+    private final boolean append;
+
 }
